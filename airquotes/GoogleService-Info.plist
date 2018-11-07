@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>201001541537-fh9u2tn23faf040qsr8kjq2gaum6s5dl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.201001541537-fh9u2tn23faf040qsr8kjq2gaum6s5dl</string>
+	<key>API_KEY</key>
+	<string>AIzaSyATY5laHuLiPrJE09e4kELFU0EJyUvXnEI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>201001541537</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.juntan.airquotes</string>
+	<key>PROJECT_ID</key>
+	<string>airquote-722dc</string>
+	<key>STORAGE_BUCKET</key>
+	<string>airquote-722dc.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:201001541537:ios:f3813b7cd4694fe1</string>
+	<key>DATABASE_URL</key>
+	<string>https://airquote-722dc.firebaseio.com</string>
+</dict>
+</plist>
