@@ -1,23 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" systemVersion="17A278a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
-                    <arscnView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="BrB-h1-WRS">
+                <viewController id="BV1-FR-VrT" customClass="ViewController" customModule="airquotes" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="81b-Om-3fD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    </arscnView>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eyJ-Va-57m">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            </arscnView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zmR-7J-Key">
+                                <rect key="frame" x="176" y="332" width="22" height="22"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Wrb-pe-1NX">
+                                <rect key="frame" x="308" y="616" width="51" height="31"/>
+                                <connections>
+                                    <action selector="MeasureSwitchChanged:" destination="BV1-FR-VrT" eventType="valueChanged" id="8Cl-mK-SO7"/>
+                                </connections>
+                            </switch>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.5" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="azC-lp-MC0">
+                                <rect key="frame" x="0.0" y="20" width="375" height="100"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="13"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="azC-lp-MC0" firstAttribute="height" secondItem="81b-Om-3fD" secondAttribute="height" multiplier="0.15" id="2TS-fK-R4w"/>
+                            <constraint firstItem="B25-mA-rcH" firstAttribute="bottom" secondItem="Wrb-pe-1NX" secondAttribute="bottom" constant="20" id="2vs-cv-Fs2"/>
+                            <constraint firstItem="B25-mA-rcH" firstAttribute="trailing" secondItem="azC-lp-MC0" secondAttribute="trailing" id="F67-OD-aAv"/>
+                            <constraint firstItem="azC-lp-MC0" firstAttribute="leading" secondItem="B25-mA-rcH" secondAttribute="leading" id="IxT-RP-iKp"/>
+                            <constraint firstItem="azC-lp-MC0" firstAttribute="top" secondItem="B25-mA-rcH" secondAttribute="top" id="MTa-fh-3eG"/>
+                            <constraint firstItem="B25-mA-rcH" firstAttribute="trailing" secondItem="eyJ-Va-57m" secondAttribute="trailing" id="R04-Jo-YaC"/>
+                            <constraint firstItem="eyJ-Va-57m" firstAttribute="top" secondItem="B25-mA-rcH" secondAttribute="top" id="UV4-18-vyj"/>
+                            <constraint firstItem="zmR-7J-Key" firstAttribute="centerX" secondItem="B25-mA-rcH" secondAttribute="centerX" id="aXJ-Eb-pha"/>
+                            <constraint firstItem="eyJ-Va-57m" firstAttribute="leading" secondItem="B25-mA-rcH" secondAttribute="leading" id="fLD-Ca-Hz1"/>
+                            <constraint firstItem="B25-mA-rcH" firstAttribute="bottom" secondItem="eyJ-Va-57m" secondAttribute="bottom" id="is8-1j-E81"/>
+                            <constraint firstItem="zmR-7J-Key" firstAttribute="centerY" secondItem="B25-mA-rcH" secondAttribute="centerY" id="qjU-mm-Yx0"/>
+                            <constraint firstItem="B25-mA-rcH" firstAttribute="trailing" secondItem="Wrb-pe-1NX" secondAttribute="trailing" constant="18" id="tUs-bz-knW"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="B25-mA-rcH"/>
+                    </view>
                     <connections>
-                        <outlet property="sceneView" destination="BrB-h1-WRS" id="5nT-qQ-ynl"/>
+                        <outlet property="MeasureSceneView" destination="eyJ-Va-57m" id="OFF-I1-Nri"/>
+                        <outlet property="MeasureStatusTextView" destination="azC-lp-MC0" id="ABd-ye-jFc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
