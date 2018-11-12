@@ -10,7 +10,7 @@
 		2C5321D0219912F8004CA6ED /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C5321CF219912F8004CA6ED /* Box.swift */; };
 		2C82B5FD21936D41000A9459 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C82B5FC21936D41000A9459 /* AppDelegate.swift */; };
 		2C82B5FF21936D41000A9459 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C82B5FE21936D41000A9459 /* art.scnassets */; };
-		2C82B60121936D41000A9459 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C82B60021936D41000A9459 /* ViewController.swift */; };
+		2C82B60121936D41000A9459 /* MeasureARSCNViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C82B60021936D41000A9459 /* MeasureARSCNViewController.swift */; };
 		2C82B60421936D41000A9459 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C82B60221936D41000A9459 /* Main.storyboard */; };
 		2C82B60621936D44000A9459 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C82B60521936D44000A9459 /* Assets.xcassets */; };
 		2C82B60921936D44000A9459 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C82B60721936D44000A9459 /* LaunchScreen.storyboard */; };
@@ -24,7 +24,7 @@
 		2C82B5F921936D41000A9459 /* airquotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = airquotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C82B5FC21936D41000A9459 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C82B5FE21936D41000A9459 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
-		2C82B60021936D41000A9459 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		2C82B60021936D41000A9459 /* MeasureARSCNViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureARSCNViewController.swift; sourceTree = "<group>"; };
 		2C82B60321936D41000A9459 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2C82B60521936D44000A9459 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2C82B60821936D44000A9459 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 				2C82B5FC21936D41000A9459 /* AppDelegate.swift */,
 				2C82B61021937195000A9459 /* GoogleService-Info.plist */,
 				2C82B5FE21936D41000A9459 /* art.scnassets */,
-				2C82B60021936D41000A9459 /* ViewController.swift */,
+				2C82B60021936D41000A9459 /* MeasureARSCNViewController.swift */,
 				2C5321CD219912A7004CA6ED /* Models */,
 				2C82B60221936D41000A9459 /* Main.storyboard */,
 				2C82B60521936D44000A9459 /* Assets.xcassets */,
@@ -139,6 +139,7 @@
 				TargetAttributes = {
 					2C82B5F821936D41000A9459 = {
 						CreatedOnToolsVersion = 9.3.1;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -222,7 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C5321D0219912F8004CA6ED /* Box.swift in Sources */,
-				2C82B60121936D41000A9459 /* ViewController.swift in Sources */,
+				2C82B60121936D41000A9459 /* MeasureARSCNViewController.swift in Sources */,
 				2C82B5FD21936D41000A9459 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -377,7 +378,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.juntan.airquotes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -396,7 +397,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.juntan.airquotes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

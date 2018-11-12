@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MeasureARSCNViewController.swift
 //  airquotes
 //
 //  Created by Jun Tan on 11/7/18.
@@ -10,7 +10,7 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class MeasureARSCNViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet weak var MeasureStatusTextView: UITextView!
     @IBOutlet weak var MeasureSceneView: ARSCNView!
@@ -52,7 +52,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         MeasureSceneView.delegate = self
-        MeasureStatusTextView.textContainerInset = UIEdgeInsetsMake(20.0, 10.0, 10.0, 0.0)
+        MeasureStatusTextView.textContainerInset = UIEdgeInsets.init(top: 20.0, left: 10.0, bottom: 10.0, right: 0.0)
         
         box = Box()
         box.isHidden = true
@@ -101,7 +101,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     // Mark: Measurement Logic
     func measureBox() {
-        let screenCenter: CGPoint = CGPoint(x: self.MeasureSceneView.bounds.midX, y: self.MeasureStatusTextView.bounds.midY)
+        let screenCenter: CGPoint = CGPoint(x: self.MeasureSceneView.bounds.midX, y: self.MeasureSceneView.bounds.midY)
         let planeTestResults = MeasureSceneView.hitTest(screenCenter, types: [.existingPlaneUsingExtent])
         
         if let result = planeTestResults.first {
@@ -157,7 +157,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // MARK: measurement UI
     func setStatusText() {
         var text = "Status: \(status!)\n"
-        text += "Tracking: \(getTrackingDescription())\n"
+        text += "\(getTrackingDescription())\n"
         text += "Distance: \(String(format:"%.2f cm", distance! * 100.0))"
         MeasureStatusTextView.text = text
     }
@@ -167,19 +167,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         if let t = trackingState {
             switch(t) {
             case .notAvailable:
-                description = "TRACKING UNAVAILABLE"
+                description = "Measurements unavailable."
             case .normal:
-                description = "TRACKING NORMAL"
+                description = "Ready to measure!"
             case .limited(let reason):
                 switch reason {
                     case .excessiveMotion:
-                        description = "TRACKING LIMITED - Too much camera movement"
+                        description = "Hold your camera steady to get an accurate reading."
                     case .insufficientFeatures:
-                        description = "TRACKING LIMITED - Not enough surface detail"
+                        description = "Try moving the box into a brighter area."
                     case .initializing:
-                        description = "INITIALIZING"
+                        description = "Loading measurements..."
                     case .relocalizing:
-                        description = "RELOCALIZING"
+                        description = "Calibrating measurements..."
                 }
             }
         }
