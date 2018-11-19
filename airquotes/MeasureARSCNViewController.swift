@@ -10,180 +10,204 @@ import UIKit
 import SceneKit
 import ARKit
 
-class MeasureARSCNViewController: UIViewController, ARSCNViewDelegate {
+class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNViewDelegate {
     
-    @IBOutlet weak var MeasureStatusTextView: UITextView!
+    var lengthNodes: [SphereNode] = []
+    var widthNodes: [SphereNode] = []
+    var heightNodes: [SphereNode] = []
+    var selectedNodes: [SphereNode]?
+    
+    enum measurementValues {
+        case length(CGFloat)
+        case width(CGFloat)
+        case height(CGFloat)
+    }
+    
+    var selectedMeasuremement: UILabel?
+    var selectedMeasurementValue: String?
+    
     @IBOutlet weak var MeasureSceneView: ARSCNView!
+    @IBOutlet weak var MeasureUILabel: UILabel!
     
-    var box: Box!
+    // Metadata View
+    @IBOutlet weak var MetadataView: UIView!
     
-    var status: String!
+    // Information View
+    @IBOutlet weak var InformationView: UIView!
     
-    var startPosition: SCNVector3!
+    // Item Dimensions
+    @IBOutlet weak var ItemLengthUILabel: UILabel!
+    @IBOutlet weak var ItemWidthUILabel: UILabel!
+    @IBOutlet weak var ItemHeightUILabel: UILabel!
     
-    var distance: Float!
-    
-    var trackingState: ARCamera.TrackingState!
-    
-    enum Mode {
-        
-        case waitingForMeasuring
-        
-        case measuring
-        
+    // MARK: UI actions
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
-    var mode: Mode = .waitingForMeasuring {
-        didSet {
-            switch mode {
-            case .waitingForMeasuring:
-                status = "NOT READY"
-            case .measuring:
-                box.update(
-                    minExtents: SCNVector3Zero, maxExtents: SCNVector3Zero)
-                box.isHidden = false
-                startPosition = nil
-                distance = 0.0
-                setStatusText()
-            }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let nextTag = textField.tag + 1
+        
+        if let nextResponder = textField.superview?.viewWithTag(nextTag) {
+            nextResponder.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
         }
+        
+        return true
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func setLabelWeight() {
+        selectedMeasuremement!.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
+    }
+    
+    func setUpTapRecognizers() {
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSceneViewTap))
+        tapRecognizer.numberOfTapsRequired = 1
+        MeasureSceneView.addGestureRecognizer(tapRecognizer)
+        
+        let lengthTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleLengthUILabelTap))
+        lengthTapRecognizer.numberOfTapsRequired = 1
+        ItemLengthUILabel.addGestureRecognizer(lengthTapRecognizer)
+        
+        let widthTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleWidthUILabelTap))
+        widthTapRecognizer.numberOfTapsRequired = 1
+        ItemWidthUILabel.addGestureRecognizer(widthTapRecognizer)
+        
+        let heightTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleHeightUILabelTap))
+        heightTapRecognizer.numberOfTapsRequired = 1
+        ItemHeightUILabel.addGestureRecognizer(heightTapRecognizer)
+    }
+
+    
+    // MARK: viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        MeasureSceneView.delegate = self
-        MeasureStatusTextView.textContainerInset = UIEdgeInsets.init(top: 20.0, left: 10.0, bottom: 10.0, right: 0.0)
         
-        box = Box()
-        box.isHidden = true
-        MeasureSceneView.scene.rootNode.addChildNode(box)
+        // labels
+        ItemLengthUILabel.isUserInteractionEnabled = true
+        ItemWidthUILabel.isUserInteractionEnabled = true
+        ItemHeightUILabel.isUserInteractionEnabled = true
+    
+        // tap setup
+        setUpTapRecognizers()
         
-        mode = .waitingForMeasuring
-        distance = 0.0
-        setStatusText()
+        // scene view settings
+        MeasureSceneView.autoenablesDefaultLighting = true
+        MeasureSceneView.antialiasingMode = SCNAntialiasingMode.multisampling4X
+        
+        // set defaults
+        selectedMeasuremement = ItemLengthUILabel
+        selectedNodes = lengthNodes
+        determineSelected()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = .horizontal
-        MeasureSceneView.session.run(configuration)
+        let config = ARWorldTrackingConfiguration()
+        config.isLightEstimationEnabled = true
+        MeasureSceneView.session.run(config, options: [.resetTracking, .removeExistingAnchors])
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MeasureSceneView.session.pause()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
-    }
-    
-    @IBAction func MeasureSwitchChanged(_ sender: UISwitch) {
-        if sender.isOn {
-            mode = .measuring
-        } else {
-            mode = .waitingForMeasuring
-        }
-    }
-    
-    // Mark: SceneKit
+    // MARK: ARSCNViewDelegate
     func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-        trackingState = camera.trackingState
+        var status = "Loading measurements"
+        switch camera.trackingState {
+        case ARCamera.TrackingState.notAvailable:
+            status = "Measurements not available"
+        case ARCamera.TrackingState.limited(_):
+            status = "Analyzing scene"
+        case ARCamera.TrackingState.normal:
+            status = "Tap to measure \(selectedMeasurementValue!)"
+        }
+        MeasureUILabel.text = status
     }
     
-    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        DispatchQueue.main.async {
-            self.measureBox()
+    // UI actions
+    func setLabelText() {
+        MeasureUILabel.text = "Measuring \(selectedMeasurementValue!)"
+    }
+    
+    // MARK: tap handlers
+    func determineSelected() {
+        if selectedMeasuremement == ItemLengthUILabel {
+            selectedMeasurementValue = "Length"
+        } else if selectedMeasuremement == ItemWidthUILabel {
+            selectedMeasurementValue = "Width"
+        } else if selectedMeasuremement == ItemHeightUILabel {
+            selectedMeasurementValue = "Height"
+        } else {
+            return
         }
     }
     
-    // Mark: Measurement Logic
-    func measureBox() {
-        let screenCenter: CGPoint = CGPoint(x: self.MeasureSceneView.bounds.midX, y: self.MeasureSceneView.bounds.midY)
-        let planeTestResults = MeasureSceneView.hitTest(screenCenter, types: [.existingPlaneUsingExtent])
+    
+    @objc func handleSceneViewTap(sender: UITapGestureRecognizer) {
+        let location = sender.location(in: MeasureSceneView)
+        let hitTest = MeasureSceneView.hitTest(location, types: [ARHitTestResult.ResultType.featurePoint])
+        guard let result = hitTest.last else { return }
         
-        if let result = planeTestResults.first {
-            status = "ready"
-            
-            if mode == .measuring {
-                status = "measuring"
-                let worldPosition = SCNVector3Make(
-                    result.worldTransform.columns.3.x,
-                    result.worldTransform.columns.3.y,
-                    result.worldTransform.columns.3.z
-                )
-                
-                if startPosition == nil {
-                    startPosition = worldPosition
-                    box.position = worldPosition
+        let transform = SCNMatrix4.init(result.worldTransform)
+        let vector = SCNVector3Make(transform.m41, transform.m42, transform.m43)
+        let sphere = SphereNode(position: vector)
+        
+        if let first = selectedNodes!.first {
+            selectedNodes!.append(sphere)
+            let distance = sphere.distance(to: first.position)
+            print(String(format: "distance: %.2f\"", distance))
+            MeasureUILabel.text = String(format: "\(selectedMeasurementValue!): %.2f\"", distance)
+            selectedMeasuremement!.text = String(format: "%.2f\"", distance)
+            if selectedNodes!.count > 2 {
+                for sphere in selectedNodes! {
+                    sphere.removeFromParentNode()
                 }
-                
-                distance = calculateDistance(
-                    from: startPosition!, to: worldPosition
-                )
-                
-                box.resizeTo(extent: distance)
-                
-                let angleInRadians = calculateAngleInRadians(
-                    from: startPosition!, to: worldPosition
-                )
-                
-                box.rotation = SCNVector4(x: 0, y: 1, z: 0,
-                                          w: -(angleInRadians + Float.pi)
-                )
-                
+                selectedMeasuremement!.text = "-"
+                selectedNodes! = [selectedNodes![2]]
+                setLabelText()
             }
         } else {
-            status = "not ready"
+            selectedNodes!.append(sphere)
         }
-    }
-    
-    func calculateDistance(from: SCNVector3, to: SCNVector3) -> Float {
-        let x = from.x - to.x
-        let y = from.y - to.y
-        let z = from.z - to.z
         
-        return sqrtf((x*x) + (y*y) + (z*z))
-    }
-    
-    func calculateAngleInRadians(from: SCNVector3, to: SCNVector3) -> Float {
-        let x = from.x - to.x
-        let z = from.z - to.z
-        return atan2(z, x)
-    }
-    
-    // MARK: measurement UI
-    func setStatusText() {
-        var text = "Status: \(status!)\n"
-        text += "\(getTrackingDescription())\n"
-        text += "Distance: \(String(format:"%.2f cm", distance! * 100.0))"
-        MeasureStatusTextView.text = text
-    }
-    
-    func getTrackingDescription() -> String {
-        var description = ""
-        if let t = trackingState {
-            switch(t) {
-            case .notAvailable:
-                description = "Measurements unavailable."
-            case .normal:
-                description = "Ready to measure!"
-            case .limited(let reason):
-                switch reason {
-                    case .excessiveMotion:
-                        description = "Hold your camera steady to get an accurate reading."
-                    case .insufficientFeatures:
-                        description = "Try moving the box into a brighter area."
-                    case .initializing:
-                        description = "Loading measurements..."
-                    case .relocalizing:
-                        description = "Calibrating measurements..."
-                }
-            }
+        for sphere in selectedNodes! {
+            self.MeasureSceneView.scene.rootNode.addChildNode(sphere)
         }
-        return description
-        
+    
     }
+    
+    // TODO: seriously refactor these handlers
+    @objc func handleLengthUILabelTap(sender: UITapGestureRecognizer) {
+        selectedMeasuremement = ItemLengthUILabel
+        selectedNodes = lengthNodes
+        determineSelected()
+        setLabelText()
+    }
+    
+    @objc func handleWidthUILabelTap(sender: UITapGestureRecognizer) {
+        selectedMeasuremement = ItemWidthUILabel
+        selectedNodes = widthNodes
+        determineSelected()
+        setLabelText()
+    }
+    @objc func handleHeightUILabelTap(sender: UITapGestureRecognizer) {
+        selectedMeasuremement = ItemHeightUILabel
+        selectedNodes = heightNodes
+        determineSelected()
+        setLabelText()
+    }
+    
+    // MARK: GetShippingPriceButton
+    @IBAction func GetShippingPriceButtonTouched(_ sender: Any) {
+        performSegue(withIdentifier: "ShowPriceViewSegue", sender: self)
+    }
+    
+    @IBAction func unwindToMeasureARSCNView(segue:UIStoryboardSegue) { }
 }
