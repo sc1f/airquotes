@@ -11,11 +11,13 @@ import SceneKit
 class SphereNode: SCNNode {
     init(position: SCNVector3) {
         super.init()
-        let sphereGeometry = SCNSphere(radius: 0.005)
+        let sphereGeometry = SCNSphere(radius: 0.075)
+        
         let material = SCNMaterial()
         material.diffuse.contents = UIColor.white
-        material.lightingModel = .physicallyBased
+        material.lightingModel = .constant
         sphereGeometry.materials = [material]
+        
         self.geometry = sphereGeometry
         self.position = position
     }
@@ -37,4 +39,24 @@ class SphereNode: SCNNode {
         let column = matrix.columns.3
         return SCNVector3(column.x, column.y, column.z)
     }
+    
+    func lineFrom(vector vector1: SCNVector3, toVector vector2: SCNVector3) -> SCNGeometry {
+        let indices: [Int32] = [0, 1]
+        let source = SCNGeometrySource(vertices: [vector1, vector2])
+        let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+        return SCNGeometry(sources: [source], elements: [element])
+    }
+    
+    func drawLine(to toNode: SCNNode) -> SCNNode {
+        let line = lineFrom(vector: self.position, toVector: toNode.position)
+        let lineNode = SCNNode(geometry: line)
+        
+        let planeMaterial = SCNMaterial()
+        planeMaterial.diffuse.contents = UIColor.white
+        line.materials = [planeMaterial]
+        
+        return lineNode
+    }
+    
+    
 }

@@ -7,4 +7,5 @@ target 'airquotes' do
 
   # Pods for airquotes
   pod 'Firebase/Core'
+  pod 'PureLayout'
 end

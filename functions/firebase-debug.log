@@ -1,0 +1,25 @@
+[debug] [2018-11-24T19:57:55.333Z] ----------------------------------------------------------------------
+[debug] [2018-11-24T19:57:55.337Z] Command:       /usr/local/Cellar/node/10.7.0/bin/node /usr/local/bin/firebase functions:shell
+[debug] [2018-11-24T19:57:55.337Z] CLI Version:   6.1.0
+[debug] [2018-11-24T19:57:55.337Z] Platform:      darwin
+[debug] [2018-11-24T19:57:55.337Z] Node Version:  v10.7.0
+[debug] [2018-11-24T19:57:55.339Z] Time:          Sat Nov 24 2018 13:57:55 GMT-0600 (Central Standard Time)
+[debug] [2018-11-24T19:57:55.339Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-11-24T19:57:55.360Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-11-24T19:57:55.360Z] > authorizing via signed-in user
+[debug] [2018-11-24T19:57:55.360Z] [iam] checking project airquote-722dc for permissions ["firebase.projects.get"]
+[debug] [2018-11-24T19:57:55.362Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/airquote-722dc:testIamPermissions  
+
+[debug] [2018-11-24T19:57:55.683Z] <<< HTTP RESPONSE 200
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-11-24T19:57:56.889Z] Fetching environment
+[debug] [2018-11-24T19:57:56.895Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/airquote-722dc  
+ 
+[debug] [2018-11-24T19:57:57.048Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-24T19:57:57.049Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/201001541537:getServerAppConfig  
+ 
+[debug] [2018-11-24T19:57:57.239Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-24T19:57:57.240Z] Starting @google-cloud/functions-emulator
+[debug] [2018-11-24T19:57:58.835Z] Parsing function triggers
+[info] ✔  functions: getPrice

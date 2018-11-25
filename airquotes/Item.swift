@@ -8,12 +8,21 @@
 
 import UIKit
 
+struct Dimensions {
+    var length: CGFloat
+    var width: CGFloat
+    var height: CGFloat
+}
+
 class Item {
-    var weight: Float
-    var location: Location?
-    var quote: Quote?
+    var weight: String
+    var destination: String
+    var dimensions: Dimensions
     
-    init(weight: Float) {
+    init(destination: String, weight: String) {
+        self.destination = destination
         self.weight = weight
+        self.dimensions = Dimensions(length: 0, width: 0, height: 0)
     }
+    
 }

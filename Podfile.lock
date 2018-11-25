@@ -48,9 +48,11 @@ PODS:
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
+  - PureLayout (3.1.4)
 
 DEPENDENCIES:
   - Firebase/Core
+  - PureLayout
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -61,6 +63,7 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleUtilities
     - nanopb
+    - PureLayout
 
 SPEC CHECKSUMS:
   Firebase: 9190018e296139d938b99521cde0c15a6e8d2946
@@ -70,7 +73,8 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 5029d78f2b438bd30ffb44e6c558b57c21622727
   GoogleUtilities: abb092d2c12e817fa3e0e7b274987dd72fb86ec3
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  PureLayout: f08c01b8dec00bb14a1fefa3de4c7d9c265df85e
 
-PODFILE CHECKSUM: 6cd4ddd5ab2b9c2d45a901bc6aa2b67128899478
+PODFILE CHECKSUM: e12f91b1f1883d86b1135312b76b93fa0d52740c
 
 COCOAPODS: 1.5.3
