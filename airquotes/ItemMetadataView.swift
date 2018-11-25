@@ -10,6 +10,7 @@ import UIKit
 import PureLayout
 
 class ItemMetadataView: UIView {
+
     var shouldSetupConstraints = true
     var currentItem: Item?
     
@@ -64,17 +65,21 @@ class ItemMetadataView: UIView {
         }
     }
     
+    func processErrors(_ message: String) {
+        errorLabel.text = message
+        metadataStackView.addArrangedSubview(errorLabel)
+        metadataStackView.setCustomSpacing(10.0, after: weightTextField)
+    }
+    
+    func clearErrors() {
+        errorLabel.text = ""
+        errorLabel.removeFromSuperview()
+    }
+    
     var destinationLabel = SmallLabel(text: "DESTINATION", alignment: .left, font_size: 12.0)
     var weightLabel = SmallLabel(text: "WEIGHT", alignment: .left, font_size: 12.0)
-    
-    var helpLabel: UILabel = {
-        let label = UILabel.init(frame: CGRect.zero)
-        label.text = "Enter Item Details"
-        label.font = UIFont.systemFont(ofSize: 12.0, weight: .regular)
-        label.textColor = UIColor.black
-        label.textAlignment = .center
-        return label
-    }()
+    var helpLabel = SmallLabel(text: "Enter Item Details", alignment: .center, font_size: 12.0)
+    var errorLabel = SmallLabel(text: "", alignment: .center, font_size: 14.0)
     
     let screenSize = UIScreen.main.bounds
     
@@ -99,6 +104,7 @@ class ItemMetadataView: UIView {
         
         destinationLabel.textColor = UIColor.gray
         weightLabel.textColor = UIColor.gray
+        errorLabel.textColor = UIColor.red
         
         metadataStackView.addArrangedSubview(helpLabel)
         metadataStackView.addArrangedSubview(destinationLabel)

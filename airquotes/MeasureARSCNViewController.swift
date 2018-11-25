@@ -54,14 +54,17 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     
     // UI methods
     func addScrim() {
-        self.view.addSubview(scrimView)
-        scrimView.frame = view.frame
+        UIView.transition(with: self.view, duration: 0.3, options: [.transitionCrossDissolve], animations: {
+            self.view.addSubview(self.scrimView)
+        }){ (_) -> Void in
+            self.scrimView.frame = self.view.frame
+        }
     }
     
     func removeScrim() {
         for view in view.subviews {
             if view.isKind(of: UIVisualEffectView.self) {
-                UIView.transition(with: self.view, duration: 0.25, options: [.transitionCrossDissolve], animations: {
+                UIView.transition(with: self.view, duration: 0.3, options: [.transitionCrossDissolve], animations: {
                     view.removeFromSuperview()
                 }, completion: nil)
             }
@@ -97,6 +100,24 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         NotificationCenter.default.removeObserver(self)
     }
     
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        let hasErrors = metadataDestinationTextFieldHasErrors()
+        
+        if hasErrors {
+            return
+        } else {
+            metadataView.clearErrors()
+        }
+
+        let filled = metadataFilled()
+        if filled {
+            hideMetadataView()
+        }
+    }
+    
+    // show & clear metadata view
     func metadataFilled() -> Bool {
         return metadataView.destinationTextField.text != "" && metadataView.weightTextField.text != ""
     }
@@ -104,7 +125,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     func showMetaDataView() {
         addScrim()
         
-        UIView.transition(with: self.view, duration: 0.1, options: [.transitionCrossDissolve], animations: {
+        UIView.transition(with: self.view, duration: 0.2, options: [.transitionCrossDissolve], animations: {
             self.metadataSummaryView!.removeFromSuperview()
         }, completion: nil)
         
@@ -116,7 +137,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     }
     
     func hideMetadataView() {
-        UIView.transition(with: self.view, duration: 0.1, options: [.transitionCrossDissolve], animations: {
+        UIView.transition(with: self.view, duration: 0.2, options: [.transitionCrossDissolve], animations: {
             self.metadataView.removeFromSuperview()
         }, completion: nil)
         
@@ -138,8 +159,28 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         metadataSummaryView!.addGestureRecognizer(tapToEditRecognizer)
     }
     
+    // MARK: UITextFieldDelegate
+
+    func metadataDestinationTextFieldHasErrors() -> Bool {
+        let length = metadataView.destinationTextField.text!.count
+        return length != 0 && length < 5
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        let hasErrors = metadataDestinationTextFieldHasErrors()
+        if hasErrors {
+            metadataView.clearErrors()
+        }
+    }
+    
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         if reason == .committed {
+            let destinationHasErrors = metadataDestinationTextFieldHasErrors()
+            if destinationHasErrors {
+                metadataView.processErrors("Please enter a valid ZIP code.")
+                return
+            }
+            
             let filled = metadataFilled()
             if filled {
                 hideMetadataView()
@@ -154,16 +195,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         let newLength = text.count + string.count - range.length
         return newLength <= 5
     }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-        let filled = metadataFilled()
-        if filled {
-            hideMetadataView()
-        }
-    }
-    
-    
+
     // Gesture Recognizers
     @objc func handleEditTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
@@ -188,7 +220,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
-        let alertController = UIAlertController.init(title: "Measurements Not Available", message: "Check your camera permissions in Settings > Privacy to allow AirQuotes access.", preferredStyle: .alert)
+        let alertController = UIAlertController.init(title: "Measurements not available", message: "Check your camera permissions in Settings > Privacy to allow AirQuotes access.", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction.init(title: "Cancel", style: .default, handler: nil)
         
