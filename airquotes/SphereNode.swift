@@ -11,7 +11,7 @@ import SceneKit
 class SphereNode: SCNNode {
     init(position: SCNVector3) {
         super.init()
-        let sphereGeometry = SCNSphere(radius: 0.075)
+        let sphereGeometry = SCNSphere(radius: 0.0025)
         
         let material = SCNMaterial()
         material.diffuse.contents = UIColor.white
@@ -51,9 +51,10 @@ class SphereNode: SCNNode {
         let line = lineFrom(vector: self.position, toVector: toNode.position)
         let lineNode = SCNNode(geometry: line)
         
-        let planeMaterial = SCNMaterial()
-        planeMaterial.diffuse.contents = UIColor.white
-        line.materials = [planeMaterial]
+        let material = SCNMaterial()
+        material.diffuse.contents = UIColor.white
+        material.lightingModel = .constant
+        line.materials = [material]
         
         return lineNode
     }

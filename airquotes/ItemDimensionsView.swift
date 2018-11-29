@@ -12,74 +12,91 @@ class ItemDimensionsView: UIView {
     var shouldSetupConstraints = true
     
     // stack views
-    lazy var itemDimensionsStackView = ContainerStackView(spacing: 2.5)
-    lazy var lengthStackView = RowStackView(spacing: 0.0)
-    lazy var widthStackView = RowStackView(spacing: 0.0)
-    lazy var heightStackView = RowStackView(spacing: 0.0)
+    lazy var itemDimensionsStackView = DefaultStackView(spacing: 2.5, axis: .vertical)
+    lazy var dimensionStackView = DefaultStackView(spacing: 5.0, axis: .horizontal)
+    lazy var dimensionLabelStackView = DefaultStackView(spacing: 0.0, axis: .vertical)
     
-    // helper labels
-    lazy var lengthLabel = SmallLabel(text: "LENGTH", alignment: .left, font_size: 16.0)
-    lazy var widthLabel = SmallLabel(text: "WIDTH", alignment: .left, font_size: 16.0)
-    lazy var heightLabel = SmallLabel(text: "HEIGHT", alignment: .left, font_size: 16.0)
+    // labels
+    lazy var dimensionLabel = SmallLabel(text: "", alignment: .left, font_size: 16.0)
+    lazy var dimensionValueLabel = SmallLabel(text: "-", alignment: .left, font_size: 20.0)
     
-    // value labels
-    lazy var lengthValueLabel = SmallLabel(text: "-", alignment: .right, font_size: 20.0)
-    lazy var widthValueLabel = SmallLabel(text: "-", alignment: .right, font_size: 20.0)
-    lazy var heightValueLabel = SmallLabel(text: "-", alignment: .right, font_size: 20.0)
+    func setLabel(dimension: String, value: String) {
+        dimensionLabel.text = dimension
+        dimensionValueLabel.text = value
+    }
     
     // direction label
-    lazy var directionLabel = SmallLabel(text: "Tap to start measuring", alignment: .center, font_size: 14.0)
+    lazy var directionLabel: SmallLabel = {
+        let label = SmallLabel(text: "Tap to start measuring", alignment: .center, font_size: 14.0)
+        label.textColor = UIColor.gray
+        label.font = UIFont.systemFont(ofSize: 16.0, weight: .bold)
+        return label
+    }()
     
     // button
-    lazy var getPriceButton: UIButton = {
+    lazy var nextMeasurementButton: UIButton = {
         let button = UIButton(frame: CGRect.zero)
-        button.backgroundColor = UIColor(hue: 44/360, saturation: 0.93, brightness: 1.0, alpha: 1.0)
         
-        button.setTitle("Get Shipping Quote", for: .normal)
-        button.titleLabel!.textColor = UIColor.white
+        button.backgroundColor = UIColor.clear
+        
+        button.setTitle("Next", for: .normal)
+        button.setTitleColor(UIColor.black, for: .normal)
         button.titleLabel!.font = UIFont.systemFont(ofSize: 16.0, weight: .bold)
         
-        button.layer.cornerRadius = 5.0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderWidth = 2.0
+        button.layer.cornerRadius = 15.0
         
         return button
     }()
     
+    lazy var prevMeasurementButton: UIButton = {
+        let button = UIButton(frame: CGRect.zero)
+        
+        button.backgroundColor = UIColor.clear
+        
+        button.setTitle("Back", for: .normal)
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.titleLabel!.font = UIFont.systemFont(ofSize: 16.0, weight: .bold)
+        
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderWidth = 2.0
+        button.layer.cornerRadius = 15.0
+        
+        return button
+    }()
+    
+    lazy var getPriceButton: UIButton = {
+        let button = UIButton(frame: CGRect.zero)
+        
+        button.backgroundColor = UIColor(hue: 44/360, saturation: 0.93, brightness: 1.0, alpha: 1.0)
+        
+        button.setTitle("Get Shipping Quote", for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel!.font = UIFont.systemFont(ofSize: 16.0, weight: .bold)
+        
+        button.layer.cornerRadius = 15.0
+        
+        return button
+    }()
+    
+    func setupStackView() {
+        dimensionLabelStackView.addArrangedSubview(dimensionLabel)
+        dimensionLabelStackView.addArrangedSubview(dimensionValueLabel)
+        
+        dimensionStackView.addArrangedSubview(dimensionLabelStackView)
+        
+        itemDimensionsStackView.addArrangedSubview(dimensionStackView)
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.clipsToBounds = true
         self.backgroundColor = UIColor.white
-        self.layer.cornerRadius = 10.0
-        self.layer.masksToBounds = false
-        self.layer.shadowColor = UIColor.gray.cgColor
-        self.layer.shadowOffset = CGSize.init(width: 0.0, height: 1.0)
-        self.layer.shadowOpacity = 0.75
-        self.layer.shadowRadius = 2.0
         
-        lengthLabel.textColor = UIColor.gray
-        widthLabel.textColor = UIColor.gray
-        heightLabel.textColor = UIColor.gray
-        
-        directionLabel.font = UIFont.systemFont(ofSize: 16.0, weight: .bold)
-        
-        lengthStackView.addArrangedSubview(lengthLabel)
-        lengthStackView.addArrangedSubview(lengthValueLabel)
-        
-        widthStackView.addArrangedSubview(widthLabel)
-        widthStackView.addArrangedSubview(widthValueLabel)
-        
-        heightStackView.addArrangedSubview(heightLabel)
-        heightStackView.addArrangedSubview(heightValueLabel)
-        
-        itemDimensionsStackView.addArrangedSubview(directionLabel)
-        itemDimensionsStackView.addArrangedSubview(lengthStackView)
-        itemDimensionsStackView.addArrangedSubview(widthStackView)
-        itemDimensionsStackView.addArrangedSubview(heightStackView)
-        itemDimensionsStackView.addArrangedSubview(getPriceButton)
-        
-        itemDimensionsStackView.setCustomSpacing(5.0, after: directionLabel)
-        itemDimensionsStackView.setCustomSpacing(20.0, after: heightStackView)
+        setupStackView()
+        setLabel(dimension: "LENGTH", value: "-")
         
         self.addSubview(itemDimensionsStackView)
     }
@@ -90,7 +107,8 @@ class ItemDimensionsView: UIView {
     
     override func updateConstraints() {
         if(shouldSetupConstraints) {
-            itemDimensionsStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.init(top: 10.0, left: 20.0, bottom: 10.0, right: 20.0))
+            itemDimensionsStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.init(top: 20.0, left: 20.0, bottom: 20.0, right: 20.0))
+            dimensionStackView.setCustomSpacing(20.0, after: dimensionLabelStackView)
             shouldSetupConstraints = false
         }
         super.updateConstraints()

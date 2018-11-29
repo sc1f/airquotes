@@ -15,6 +15,7 @@ struct Dimensions {
 }
 
 class Item {
+    // TODO: store weight as float and compute string property from it
     var weight: String
     var destination: String
     var dimensions: Dimensions

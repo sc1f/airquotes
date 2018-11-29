@@ -8,20 +8,90 @@
 
 import UIKit
 
-class PriceViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
-    @IBOutlet weak var BackRectangle: RoundedRectangle!
-    @IBOutlet weak var ShippingCompanyTableView: ShippingCompanyTableView!
+class PriceViewController: UIViewController {
+    
+    var currentItem: Item?
+    
+    lazy var dimensionSummaryView: DefaultStackView = {
+        let view = DefaultStackView(spacing: 0.0, axis: .horizontal)
+        
+        let lengthStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+        let widthStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+        let heightStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+        
+        let lengthLabel = SmallLabel(text: "LENGTH", alignment: .center, font_size: 12.0)
+        let widthLabel = SmallLabel(text: "WIDTH", alignment: .center, font_size: 12.0)
+        let heightLabel = SmallLabel(text: "HEIGHT", alignment: .center, font_size: 12.0)
+        
+        lengthLabel.textColor = UIColor.gray
+        widthLabel.textColor = UIColor.gray
+        heightLabel.textColor = UIColor.gray
+        
+        let lengthValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimensions.length), alignment: .center, font_size: 14.0)
+        let widthValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimensions.width), alignment: .center, font_size: 14.0)
+        let heightValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimensions.height), alignment: .center, font_size: 14.0)
+        
+        lengthStackView.addArrangedSubview(lengthLabel)
+        lengthStackView.addArrangedSubview(lengthValueLabel)
+        
+        widthStackView.addArrangedSubview(widthLabel)
+        widthStackView.addArrangedSubview(widthValueLabel)
+        
+        heightStackView.addArrangedSubview(heightLabel)
+        heightStackView.addArrangedSubview(heightValueLabel)
+        
+        view.addArrangedSubview(lengthStackView)
+        view.addArrangedSubview(widthStackView)
+        view.addArrangedSubview(heightStackView)
+        
+        return view
+    }()
+    
+    lazy var metadataSummaryView: ItemMetadataSummaryView = {
+        let view = ItemMetadataSummaryView(currentItem: self.currentItem!)
+        view.addBottomBorder()
+        return view
+    }()
+    
+    lazy var backButton: UIButton = {
+        let button = UIButton(frame: CGRect.zero)
+        
+        button.setTitle("Back", for: .normal)
+        
+        button.backgroundColor = UIColor.clear
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.titleLabel!.font = UIFont.systemFont(ofSize: 16.0, weight: .bold)
+        
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderWidth = 2.0
+        button.layer.cornerRadius = 5.0
+        
+        button.addTarget(self, action: #selector(handleBackButtonPress), for: .touchUpInside)
+        
+        return button
+    }()
+    
+    @objc func handleBackButtonPress(_ sender: UIButton) {
+        performSegue(withIdentifier: "unwindToRootSegue", sender: self)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        ShippingCompanyTableView.delegate = self
-        ShippingCompanyTableView.dataSource = self
         
-        // round top corners
-        self.view.clipsToBounds = true
-        self.view.layer.cornerRadius = 10
-        self.view.layer.maskedCorners = [.layerMinXMinYCorner,.layerMaxXMinYCorner]
-        self.view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleBackPanGesture)))
+        metadataSummaryView.metadataSummaryStackView.addArrangedSubview(dimensionSummaryView)
+        self.view.addSubview(metadataSummaryView)
+        metadataSummaryView.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0), excludingEdge: .bottom)
+        
+        let companyPageController = ShippingCompanyPageViewController.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        addChild(companyPageController)
+        self.view.addSubview(companyPageController.view)
+        companyPageController.view.autoPinEdge(.top, to: .bottom, of: metadataSummaryView, withOffset: 10.0)
+        companyPageController.view.autoPinEdge(toSuperviewEdge: .leading, withInset: 10.0)
+        companyPageController.view.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10.0)
+        companyPageController.view.autoPinEdge(toSuperviewEdge: .bottom, withInset: 30.0)
+        
+        self.view.addSubview(backButton)
+        backButton.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0), excludingEdge: .top)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -38,70 +108,4 @@ class PriceViewController: UIViewController, UITableViewDataSource, UITableViewD
         // Pass the selected object to the new view controller.
     }
     */
-    
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // TODO: set up API gateways
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ShippingCompanyTableViewCell") as! ShippingCompanyTableViewCell
-        cell.ShippingCompanyNameUILabel.text = "USPS"
-        cell.ServiceCollectionView.delegate = self
-        cell.ServiceCollectionView.dataSource = self
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
-    {
-        // TODO: dynamic row height
-        return 150.0;
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ServiceCollectionViewCell", for: indexPath) as! ServiceCollectionViewCell
-        cell.ServiceNameUILabel.text = "Priority Mail"
-        cell.ServicePriceUILabel.text = "$13.95"
-        cell.ServiceDueDateUILabel.text = "Monday, November 19"
-        return cell
-    }
-    
-    @objc func handleBackPanGesture(sender: UIPanGestureRecognizer) {
-        let percentThreshold:CGFloat = 0.3
-        let translation = sender.translation(in: view)
-        
-        let newY = ensureRange(value: view.frame.minY + translation.y, minimum: 0, maximum: view.frame.maxY)
-        let progress = progressAlongAxis(newY, view.bounds.height)
-        
-        view.frame.origin.y = newY //Move view to new position
-        
-        if sender.state == .ended {
-            let velocity = sender.velocity(in: view)
-            if velocity.y >= 300 || progress > percentThreshold {
-                self.dismiss(animated: true) //Perform dismiss
-            } else {
-                UIView.animate(withDuration: 0.2, animations: {
-                    self.view.frame.origin.y = 0 // Revert animation
-                })
-            }
-        }
-        
-        sender.setTranslation(.zero, in: view)
-    }
-    
-    func progressAlongAxis(_ pointOnAxis: CGFloat, _ axisLength: CGFloat) -> CGFloat {
-        let movementOnAxis = pointOnAxis / axisLength
-        let positiveMovementOnAxis = fmaxf(Float(movementOnAxis), 0.0)
-        let positiveMovementOnAxisPercent = fminf(positiveMovementOnAxis, 1.0)
-        return CGFloat(positiveMovementOnAxisPercent)
-    }
-    
-    func ensureRange<T>(value: T, minimum: T, maximum: T) -> T where T : Comparable {
-        return min(max(value, minimum), maximum)
-    }
 }

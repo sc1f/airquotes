@@ -1,5 +1,6 @@
+const functions = require("firebase-functions");
 const r = require("request");
-const UPS = require("./companies/UPS.js");
+const { UPS } = require("./companies/UPS.js");
 
 const endpoints = {
     usps: "https://secure.shippingapis.com/ShippingAPI.dll?API=RateV4&XML",
@@ -11,24 +12,19 @@ const valid_companies = ["USPS", "FedEx", "UPS"];
 
 function getJSONResponse(options) {
     let result = {};
-
-    r.post(options, (err, res, body) => {
-        if (err) {
-            console.error("Request error:", err);
-            result = null;
-            return;
-        }
-        
-        result = JSON.parse(body);
+    return new Promise((resolve, reject) => {
+        r.post(options, (err, res, body) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(body);
+        });
     });
-
-    console.log(result);
-    return result;
 }
 
-exports.getPrice = function (company, item) {
+exports.getPrice = function(company, item) {
     if (!valid_companies.includes(company)) {
-        return null;
+        return "bad company";
     }
 
     let shipping_company,
@@ -36,8 +32,8 @@ exports.getPrice = function (company, item) {
         request_options;
 
     switch (company) {
-        case "ups": {
-            const ups_env = functions.config().ups;
+        case "UPS": {
+            const ups_env = functions.config()["ups"];
             credentials = {
                 access_key: ups_env.access_key,
                 username: ups_env.username,
@@ -50,7 +46,6 @@ exports.getPrice = function (company, item) {
                 method: "POST",
                 headers: {
                     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
-                    "Access-Control-Allow-Methods:": "POST",
                     "Access-Control-Allow-Origin": "*",
                 },
                 json: true,
@@ -59,25 +54,27 @@ exports.getPrice = function (company, item) {
             break;
         }
         default: {
-            return null;
+            return null 
         }
         
     }
 
-    console.log(shipping_company);
-
-    let response_body;
+    let handler;
 
     if (shipping_company.format === "JSON") {
-        response_body = getJSONResponse(request_options);
+        getJSONResponse(request_options).then((body) => {
+            if (shipping_company.hasError(body)) {
+                handler = shipping_company.handlers.error(body)
+            } else {
+                handler = shipping_company.handlers.response(body);
+            }
+
+            return handler;
+        })
+        .catch((err) => console.error(err));
     } else {
-        return null;
+        return "bad json";
     }
 
-    const has_error = shipping_company.hasError(response_body);
-    if (response_body === null || has_error) {
-        return null;
-    }
-
-    return shipping_company.handlers.response(response_body);
+    return handler;    
 }

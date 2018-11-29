@@ -10,7 +10,8 @@ import UIKit
 import PureLayout
 
 class ItemMetadataView: UIView {
-
+    
+    var defaultInstructionText = "Enter your item details to begin"
     var shouldSetupConstraints = true
     var currentItem: Item?
     
@@ -20,7 +21,7 @@ class ItemMetadataView: UIView {
         return image
     }()
     
-    var metadataStackView = ContainerStackView(spacing: 5.0)
+    var metadataStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
     
     var destinationTextField: UITextFieldPadded = {
         let textField = UITextFieldPadded(frame: CGRect.zero)
@@ -28,7 +29,8 @@ class ItemMetadataView: UIView {
         textField.attributedPlaceholder = NSAttributedString(string: "Enter a ZIP code", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         
         textField.keyboardType = UIKeyboardType.numberPad
-        textField.spellCheckingType = UITextSpellCheckingType.no
+        textField.autocorrectionType = .no
+        textField.clearButtonMode = .always
         
         textField.backgroundColor = UIColor.white
         textField.font = UIFont.systemFont(ofSize: 20.0)
@@ -45,7 +47,8 @@ class ItemMetadataView: UIView {
         textField.attributedPlaceholder = NSAttributedString(string: "Estimated Weight (lbs)", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         
         textField.keyboardType = UIKeyboardType.decimalPad
-        textField.spellCheckingType = UITextSpellCheckingType.no
+        textField.autocorrectionType = .no
+        textField.clearButtonMode = .always
         
         textField.backgroundColor = UIColor.white
         textField.font = UIFont.systemFont(ofSize: 20.0)
@@ -78,7 +81,7 @@ class ItemMetadataView: UIView {
     
     var destinationLabel = SmallLabel(text: "DESTINATION", alignment: .left, font_size: 12.0)
     var weightLabel = SmallLabel(text: "WEIGHT", alignment: .left, font_size: 12.0)
-    var helpLabel = SmallLabel(text: "Enter Item Details", alignment: .center, font_size: 12.0)
+    var helpLabel = SmallLabel(text: "", alignment: .center, font_size: 14.0)
     var errorLabel = SmallLabel(text: "", alignment: .center, font_size: 14.0)
     
     let screenSize = UIScreen.main.bounds
@@ -87,6 +90,7 @@ class ItemMetadataView: UIView {
         super.init(frame: CGRect.zero)
         
         self.currentItem = currentItem
+        helpLabel.text = defaultInstructionText
         
         if currentItem.destination != "" && currentItem.weight != "" {
             destinationTextField.text = currentItem.destination

@@ -1,5 +1,5 @@
 //
-//  RowStackView.swift
+//  DefaultStackView
 //  airquotes
 //
 //  Created by Jun Tan on 11/24/18.
@@ -8,18 +8,17 @@
 
 import UIKit
 
-class RowStackView: UIStackView {
+class DefaultStackView: UIStackView {
 
-    required init(spacing: CGFloat) {
+    required init(spacing: CGFloat, axis: NSLayoutConstraint.Axis) {
         super.init(frame: CGRect.zero)
-        self.axis = .horizontal
+        self.axis = axis
         self.distribution = .fillEqually
         self.spacing = spacing
         self.translatesAutoresizingMaskIntoConstraints = false
     }
-    
+
     required init(coder: NSCoder) {
         super.init(coder: coder)
     }
-
 }

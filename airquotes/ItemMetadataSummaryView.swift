@@ -20,9 +20,9 @@ class ItemMetadataSummaryView: UIView {
     }()
     
     // Stack Views
-    lazy var metadataSummaryStackView = ContainerStackView(spacing: 5.0)
-    lazy var destinationStackView = RowStackView(spacing: 0.0)
-    lazy var weightStackView = RowStackView(spacing: 0.0)
+    lazy var metadataSummaryStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+    lazy var destinationStackView = DefaultStackView(spacing: 0.0, axis: .horizontal)
+    lazy var weightStackView = DefaultStackView(spacing: 0.0, axis: .horizontal)
     
     // Value Labels
     lazy var destinationValueLabel = SmallLabel(text: currentItem!.destination, alignment: .right, font_size: 14.0)
@@ -36,13 +36,8 @@ class ItemMetadataSummaryView: UIView {
         super.init(frame: CGRect.zero)
         
         self.currentItem = currentItem
-        
+    
         self.backgroundColor = UIColor.white
-        self.layer.cornerRadius = 10.0
-        self.layer.shadowColor = UIColor.gray.cgColor
-        self.layer.shadowOffset = CGSize.init(width: 0.0, height: 1.0)
-        self.layer.shadowOpacity = 0.75
-        self.layer.shadowRadius = 2.0
         
         self.destinationLabel.textColor = UIColor.gray
         self.weightLabel.textColor = UIColor.gray
@@ -63,6 +58,13 @@ class ItemMetadataSummaryView: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    func addBottomBorder() {
+        let border = CALayer()
+        border.backgroundColor = UIColor.gray.cgColor
+        border.frame = CGRect(x: 0, y: self.frame.size.height - 1.0, width: self.frame.size.width, height: 1.0)
+        self.layer.addSublayer(border)
     }
     
     override func updateConstraints() {
