@@ -8,12 +8,11 @@ const endpoints = {
     ups: "https://onlinetools.ups.com/rest/Rate"
 }
 
-const valid_companies = ["USPS", "FedEx", "UPS"];
+exports.valid_companies = ["USPS", "FedEx", "UPS"];
 
 function getJSONResponse(options) {
-    let result = {};
     return new Promise((resolve, reject) => {
-        r.post(options, (err, res, body) => {
+        r.post(options, (err, _, body) => {
             if (err) {
                 reject(err);
             }
@@ -23,8 +22,8 @@ function getJSONResponse(options) {
 }
 
 exports.getPrice = function(company, item) {
-    if (!valid_companies.includes(company)) {
-        return "bad company";
+    if (!exports.valid_companies.includes(company)) {
+        return null;
     }
 
     let shipping_company,
@@ -58,23 +57,21 @@ exports.getPrice = function(company, item) {
         }
         
     }
-
-    let handler;
-
     if (shipping_company.format === "JSON") {
-        getJSONResponse(request_options).then((body) => {
-            if (shipping_company.hasError(body)) {
-                handler = shipping_company.handlers.error(body)
-            } else {
-                handler = shipping_company.handlers.response(body);
-            }
-
-            return handler;
-        })
-        .catch((err) => console.error(err));
+        return new Promise((resolve, reject) => {
+            getJSONResponse(request_options).then((body) => {
+                if (shipping_company.hasError(body)) {
+                    return reject(shipping_company.handlers.error(body));
+                } else {
+                    return resolve(shipping_company.handlers.response(body));
+                }
+            })
+            .catch((err) => console.error(err));    
+        });
+        
     } else {
-        return "bad json";
+        return null;
     }
 
-    return handler;    
+    
 }

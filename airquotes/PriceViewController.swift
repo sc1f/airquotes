@@ -7,10 +7,16 @@
 //
 
 import UIKit
+import Firebase
 
 class PriceViewController: UIViewController {
     
+    lazy var functions = Functions.functions()
+    
     var currentItem: Item?
+    var UPSData: [UPSService] = []
+    
+    var loadingIndicator = UIActivityIndicatorView(frame: CGRect.zero)
     
     lazy var dimensionSummaryView: DefaultStackView = {
         let view = DefaultStackView(spacing: 0.0, axis: .horizontal)
@@ -78,20 +84,70 @@ class PriceViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        metadataSummaryView.metadataSummaryStackView.addArrangedSubview(dimensionSummaryView)
-        self.view.addSubview(metadataSummaryView)
-        metadataSummaryView.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0), excludingEdge: .bottom)
+        self.metadataSummaryView.metadataSummaryStackView.addArrangedSubview(self.dimensionSummaryView)
+        self.view.addSubview(self.metadataSummaryView)
+        self.metadataSummaryView.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0), excludingEdge: .bottom)
         
-        let companyPageController = ShippingCompanyPageViewController.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-        addChild(companyPageController)
-        self.view.addSubview(companyPageController.view)
-        companyPageController.view.autoPinEdge(.top, to: .bottom, of: metadataSummaryView, withOffset: 10.0)
-        companyPageController.view.autoPinEdge(toSuperviewEdge: .leading, withInset: 10.0)
-        companyPageController.view.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10.0)
-        companyPageController.view.autoPinEdge(toSuperviewEdge: .bottom, withInset: 30.0)
+        self.view.addSubview(loadingIndicator)
+        loadingIndicator.autoCenterInSuperview()
+        loadingIndicator.startAnimating()
         
-        self.view.addSubview(backButton)
-        backButton.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0), excludingEdge: .top)
+        let encoder = JSONEncoder()
+        let json_item = try! encoder.encode(currentItem)
+        let json_string = String(data: json_item, encoding: .utf8)
+        
+        functions.httpsCallable("getPrice")
+            .call(["company": "UPS", "item": json_string]) { (result, error) in
+                if let error = error as NSError? {
+                    if error.domain == FunctionsErrorDomain {
+                        let code = FunctionsErrorCode(rawValue: error.code)
+                        let message = error.localizedDescription
+                        let details = error.userInfo[FunctionsErrorDetailsKey]
+                        
+                        print(code!)
+                        print(details!)
+                        print(message)
+                    }
+                }
+                
+                let price_data = (result?.data as! [NSDictionary])
+                
+                for service in price_data {
+                    let due = service["due"] as! NSDictionary
+                    
+                    guard
+                        let name = service["name"] as? String,
+                        let charge = service["charge"] as? String,
+                        let due_date = due["date"] as? String,
+                        let due_time = due["time"] as? String,
+                        let transit_time = service["transit_time"] as? String
+                        else {
+                            print(service)
+                            continue
+                        }
+                    let new_due = UPSDue.init(date: due_date, time: due_time)
+                    let new_service = UPSService.init(name: name, charge: charge, due: new_due, transit_time: transit_time)
+                    self.UPSData.append(new_service)
+                }
+                
+                print(self.UPSData)
+                
+                self.loadingIndicator.stopAnimating()
+                self.loadingIndicator.removeFromSuperview()
+                
+                let companyPageController = ShippingCompanyPageViewController()
+                companyPageController.UPSData = self.UPSData
+                self.addChild(companyPageController)
+                
+                self.view.addSubview(companyPageController.view)
+                companyPageController.view.autoPinEdge(.top, to: .bottom, of: self.metadataSummaryView, withOffset: 10.0)
+                companyPageController.view.autoPinEdge(toSuperviewEdge: .leading, withInset: 10.0)
+                companyPageController.view.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10.0)
+                companyPageController.view.autoPinEdge(toSuperviewEdge: .bottom, withInset: 30.0)
+                
+                self.view.addSubview(self.backButton)
+                self.backButton.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0), excludingEdge: .top)
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

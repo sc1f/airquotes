@@ -3,6 +3,7 @@ const { Company } = require("./Company.js");
 class UPS extends Company {
     constructor(credentials, format, endpoint) {
         super(credentials, format, endpoint);
+
         this.handlers = {
             error: this.handleError,
             response: this.handleResponse
@@ -10,6 +11,12 @@ class UPS extends Company {
     }
 
     composeRequest(item) {
+        let from_postcode,
+            to_postcode;
+
+        item.from_postcode ? from_postcode = item.from : from_postcode = "77089"
+        item.to_postcode ? to_postcode = item.destination : to_postcode = "10003";
+
         return {
             "UPSSecurity": {
                 "UsernameToken": {
@@ -22,42 +29,53 @@ class UPS extends Company {
             },
             "RateRequest": {
                 "Request": {
-                    "RequestOption": "Rate",
+                    "RequestOption": "Shoptimeintransit",
                 },
                 "Shipment": {
+                    "Shipper": {
+                        "Address": {
+                            "PostalCode": from_postcode,
+                            "CountryCode": "US"
+                        }
+                    },
                     "ShipFrom": {
                         "Address": {
-                            "PostalCode": 78705,
+                            "PostalCode": from_postcode,
+                            "CountryCode": "US"
                         }
                     },
                     "ShipTo": {
                         "Address": {
-                            "PostalCode": 10003
+                            "PostalCode": to_postcode,
+                            "CountryCode": "US"
                         }
+                    }, 
+                    "Package": {
+                        "PackagingType": {
+                            "Code": "02",
+                            "Description": "Package"
+                        },
+                        "Dimensions": {
+                            "UnitOfMeasurement": {
+                                "Code": "IN",
+                                "Description": "inches"
+                            },
+                            "Length": item["dimensions"]["length"].toFixed(2),
+                            "Width": item["dimensions"]["width"].toFixed(2),
+                            "Height": item["dimensions"]["height"].toFixed(2)
+                        },
+                        "PackageWeight": {
+                            "UnitOfMeasurement": {
+                                "Code": "LBS",
+                                "Description": "pounds"
+                            },
+                            "Weight": item["weight"].replace(" lb", "")
+                        }
+                    },
+                    "DeliveryTimeInformation": {
+                        "PackageBillType": "03"
                     }
                 },
-                "Package": {
-                    "PackagingType": {
-                        "Code": "02",
-                        "Description": "Rate"
-                    },
-                    "Dimensions": {
-                        "UnitOfMeasurement": {
-                            "Code": "IN",
-                            "Description": "inches"
-                        },
-                        "Length": 5,
-                        "Width": 4,
-                        "Height": 10
-                    },
-                    "PackageWeight": {
-                        "UnitOfMeasurement": {
-                            "Code": "LBS",
-                            "Description": "pounds"
-                        },
-                        "Weight": 2
-                    }
-                }
             },
 
         }
@@ -69,20 +87,66 @@ class UPS extends Company {
 
     handleError(body) {
         if (!body) return null;
-        console.log(body);
-        try {
-            console.log(JSON.stringify(body.Fault.detail.Errors))
-        } catch(err) {
-            console.error(err)
+        console.error("error:", body);
+
+        let errors = body.Fault.detail.Errors;
+        if (errors) {
+            errors = JSON.stringify(errors);
+        } else {
+            errors = JSON.stringify(body);
         }
-        return body;
+
+        return errors;
 
     }
 
     handleResponse(body) {
-        console.log(JSON.stringify(body))
-        return body;
+
+        let services = [];
+
+        function parseDate(date, day_of_week) {
+            const days = {
+                "MON": "Monday",
+                "TUE": "Tuesday",
+                "WED": "Wednesday", 
+                "THU": "Thursday",
+                "FRI": "Friday",
+                "SAT": "Saturday"
+            };
+
+            let d = date.split("")
+            let year = d.slice(0,4).join("");
+            let month = d.slice(4,6).join("");
+            let day = d.slice(6,8).join("");
+
+            let dow = days[day_of_week];
+    
+            return `${dow}, ${month}/${day}/${year}`;
+        }
+        
+        for (let s of body["RateResponse"]["RatedShipment"]) {
+            let service = {};
+            
+            service.name = s["TimeInTransit"]["ServiceSummary"]["Service"]["Description"]
+            service.charge = `${s["TotalCharges"]["MonetaryValue"]}`;
+            let arrival = s["TimeInTransit"]["ServiceSummary"]["EstimatedArrival"]["Arrival"];
+
+            service.due = {
+                date: parseDate(arrival["Date"], s["TimeInTransit"]["ServiceSummary"]["EstimatedArrival"]["DayOfWeek"]), 
+            }
+
+            service.due.time = "End of day";
+
+            if (s["GuaranteedDelivery"]) {
+                service.due.time = s["GuaranteedDelivery"]["DeliveryByTime"] || "End of day";
+            }
+
+            service.transit_time = s["TimeInTransit"]["ServiceSummary"]["EstimatedArrival"]["BusinessDaysInTransit"];
+            services.push(service)
+        }
+        return services;
     }
+    
 }
 
 exports.UPS = UPS;

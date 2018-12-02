@@ -10,7 +10,7 @@ import UIKit
 
 class ServiceTableViewCell: UITableViewCell {
 
-    let serviceStack = DefaultStackView(spacing: 0.0, axis: .vertical)
+    let serviceStack = DefaultStackView(spacing: 10.0, axis: .vertical)
     let metaStack = DefaultStackView(spacing: 0.0, axis: .horizontal)
     
     let nameLabel: SmallLabel = {
@@ -25,6 +25,7 @@ class ServiceTableViewCell: UITableViewCell {
     
     let dueLabel: SmallLabel = {
         let label = SmallLabel(text: "", alignment: .left, font_size: 12.0)
+        label.font = UIFont.systemFont(ofSize: 12.0, weight: .light)
         return label
     }()
     

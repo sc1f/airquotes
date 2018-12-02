@@ -20,15 +20,18 @@ class ItemMetadataSummaryView: UIView {
     }()
     
     // Stack Views
-    lazy var metadataSummaryStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+    lazy var metadataSummaryStackView = DefaultStackView(spacing: 10.0, axis: .vertical)
+    lazy var fromStackView = DefaultStackView(spacing: 0.0, axis: .horizontal)
     lazy var destinationStackView = DefaultStackView(spacing: 0.0, axis: .horizontal)
     lazy var weightStackView = DefaultStackView(spacing: 0.0, axis: .horizontal)
     
     // Value Labels
+    lazy var fromValueLabel = SmallLabel(text: currentItem!.from, alignment: .right, font_size: 14.0)
     lazy var destinationValueLabel = SmallLabel(text: currentItem!.destination, alignment: .right, font_size: 14.0)
     lazy var weightValueLabel = SmallLabel(text: currentItem!.weight, alignment: .right, font_size: 14.0)
     
     // Helper Labels
+    lazy var fromLabel = SmallLabel(text: "FROM", alignment: .left, font_size: 14.0)
     lazy var destinationLabel = SmallLabel(text: "DESTINATION", alignment: .left, font_size: 14.0)
     lazy var weightLabel = SmallLabel(text: "WEIGHT", alignment: .left, font_size: 14.0)
 
@@ -39,6 +42,7 @@ class ItemMetadataSummaryView: UIView {
     
         self.backgroundColor = UIColor.white
         
+        self.fromLabel.textColor = UIColor.gray
         self.destinationLabel.textColor = UIColor.gray
         self.weightLabel.textColor = UIColor.gray
         
@@ -46,12 +50,18 @@ class ItemMetadataSummaryView: UIView {
         
         self.addSubview(metadataSummaryStackView)
         
+        metadataSummaryStackView.distribution = .fill
+        
+        fromStackView.addArrangedSubview(fromLabel)
+        fromStackView.addArrangedSubview(fromValueLabel)
+        
         destinationStackView.addArrangedSubview(destinationLabel)
         destinationStackView.addArrangedSubview(destinationValueLabel)
         
         weightStackView.addArrangedSubview(weightLabel)
         weightStackView.addArrangedSubview(weightValueLabel)
         
+        metadataSummaryStackView.addArrangedSubview(fromStackView)
         metadataSummaryStackView.addArrangedSubview(destinationStackView)
         metadataSummaryStackView.addArrangedSubview(weightStackView)
     }

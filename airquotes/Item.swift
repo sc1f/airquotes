@@ -8,19 +8,21 @@
 
 import UIKit
 
-struct Dimensions {
+struct Dimensions: Codable {
     var length: CGFloat
     var width: CGFloat
     var height: CGFloat
 }
 
-class Item {
+class Item: Codable {
     // TODO: store weight as float and compute string property from it
+    var from: String
     var weight: String
     var destination: String
     var dimensions: Dimensions
     
-    init(destination: String, weight: String) {
+    init(from: String, destination: String, weight: String) {
+        self.from = from
         self.destination = destination
         self.weight = weight
         self.dimensions = Dimensions(length: 0, width: 0, height: 0)

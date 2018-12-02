@@ -29,7 +29,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     }
 
     // scene setup
-    var currentItem = Item(destination: "", weight: "")
+    var currentItem = Item(from: "", destination: "", weight: "")
     var measureStatus = "Loading measurements"
     var impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
     var successFeedbackGenerator = UINotificationFeedbackGenerator()
@@ -38,12 +38,13 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     // subviews
     lazy var metadataView: ItemMetadataView = {
         let view = ItemMetadataView(currentItem: currentItem)
+        view.fromTextField.delegate = self
         view.destinationTextField.delegate = self
         view.weightTextField.delegate = self
         return view
     }()
     
-    lazy var metadataSummaryView = ItemMetadataSummaryView(currentItem: currentItem)
+    //lazy var metadataSummaryView = ItemMetadataSummaryView(currentItem: currentItem)
     
     lazy var sceneView: ARSCNView = {
         let scene = ARSCNView(frame: CGRect.zero)
@@ -111,6 +112,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
 
     lazy var scrimView: UIVisualEffectView = {
         let scrim = UIVisualEffectView.init(effect: UIBlurEffect.init(style: .dark))
+        scrim.alpha = 75.0
         return scrim
     }()
     
@@ -121,7 +123,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     // UI methods
     func addScrim() {
         UIView.transition(with: self.view, duration: 0.3, options: [.transitionCrossDissolve], animations: {
-            self.view.addSubview(self.scrimView)
+            self.view.insertSubview(self.scrimView, belowSubview: self.metadataView)
         }){ (_) -> Void in
             self.scrimView.frame = self.view.frame
         }
@@ -142,9 +144,12 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     @objc func handleScrimTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             let filled = metadataFilled()
-            let valid = !metadataDestinationTextFieldHasErrors()
+            let valid = !metadataLocationTextFieldHasErrors()
             if filled && valid {
-                hideMetadataView()
+                metadataView.helpLabel.removeFromSuperview()
+                removeScrim()
+            } else if !filled && valid {
+                metadataView.processErrors("Please fill item details to continue.")
             }
         }
     }
@@ -153,19 +158,45 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        if currentItem.dimensions.length != 0 || currentItem.dimensions.width != 0 || currentItem.dimensions.height != 0 {
+            currentItem.dimensions = Dimensions(length: 0.0, width: 0.0, height: 0.0)
+        }
         
         view.addSubview(sceneView)
         sceneView.autoPinEdgesToSuperviewSafeArea()
         
-        addScrim()
+        view.addSubview(metadataView)
+        metadataView.autoPinEdge(toSuperviewEdge: .top)
+        metadataView.autoPinEdge(toSuperviewSafeArea: .leading)
+        metadataView.autoPinEdge(toSuperviewSafeArea: .trailing)
         
-        view.insertSubview(metadataView, aboveSubview: scrimView)
-        metadataView.autoCenterInSuperview()
+        actionView.addSubview(statusLabel)
+        statusLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 10.0)
+        statusLabel.autoAlignAxis(toSuperviewAxis: .vertical)
         
-        view.insertSubview(dimensionView, belowSubview: scrimView)
+        // add actions + status text
+        if let device = AVCaptureDevice.default(for: AVMediaType.video) {
+            if device.hasTorch {
+                actionView.addSubview(toggleLightButton)
+                toggleLightButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 0.0)
+                toggleLightButton.autoPinEdge(toSuperviewEdge: .top, withInset: 10.0)
+            }
+        }
+        
+        actionView.addSubview(clearButton)
+        clearButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 0.0)
+        clearButton.autoPinEdge(toSuperviewEdge: .top, withInset: 10.0)
+        
+        view.insertSubview(actionView, aboveSubview: sceneView)
+        
+        actionView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10.0)
+        actionView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10.0)
+        actionView.autoPinEdge(.top, to: .bottom, of: metadataView, withOffset: 10.0)
+        
+        view.insertSubview(dimensionView, aboveSubview: sceneView)
         dimensionView.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets.init(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0), excludingEdge: .top)
+        
+        addScrim()
     }
     
     override func didReceiveMemoryWarning() {
@@ -187,25 +218,9 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         NotificationCenter.default.removeObserver(self)
     }
     
-    @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            if self.view.frame.origin.y == 0{
-                self.view.frame.origin.y -= keyboardSize.height - 50
-            }
-        }
-    }
-    
-    @objc func keyboardWillHide(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            if self.view.frame.origin.y != 0{
-                self.view.frame.origin.y += keyboardSize.height - 50
-            }
-        }
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
-        let hasErrors = metadataDestinationTextFieldHasErrors()
+        let hasErrors = metadataLocationTextFieldHasErrors()
         
         if hasErrors {
             return
@@ -216,76 +231,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     
     // show & clear views
     func metadataFilled() -> Bool {
-        return metadataView.destinationTextField.text != "" && metadataView.weightTextField.text != ""
-    }
-    
-    func showMetadataView() {
-        addScrim()
-        
-        actionView.removeFromSuperview()
-        
-        for subview in self.view.subviews {
-            if subview.isMember(of: ItemMetadataSummaryView.self){
-               subview.removeFromSuperview()
-            }
-        }
-        
-        metadataView.currentItem = currentItem
-        metadataView.helpLabel.text = "Edit item details"
-        
-        UIView.transition(with: self.view, duration: 0.2, options: [.transitionCrossDissolve], animations: {
-            self.view.addSubview(self.metadataView)
-        }, completion: nil)
-        
-        metadataView.autoCenterInSuperview()
-    }
-    
-    func hideMetadataView() {
-        UIView.transition(with: self.metadataView, duration: 0.2, options: [.transitionCrossDissolve], animations: {
-            self.metadataView.removeFromSuperview()
-        }, completion: nil)
-        
-        removeScrim()
-        
-        let destination = metadataView.destinationTextField.text!
-        let weight = metadataView.weightTextField.text!
-        
-        currentItem.destination = destination
-        currentItem.weight = weight
-        
-        metadataSummaryView = ItemMetadataSummaryView(currentItem: currentItem)
-        
-        let tapToEditRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleEditTap))
-        metadataSummaryView.addGestureRecognizer(tapToEditRecognizer)
-        
-        UIView.transition(with: self.view, duration: 0.2, options: [.transitionCrossDissolve], animations: {
-            self.view.addSubview(self.metadataSummaryView)
-        }, completion: nil)
-        
-        metadataSummaryView.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0), excludingEdge: .bottom)
-        
-        actionView.addSubview(statusLabel)
-        statusLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 10.0)
-        statusLabel.autoAlignAxis(toSuperviewAxis: .vertical)
-        
-        // add actions + status text
-        if let device = AVCaptureDevice.default(for: AVMediaType.video) {
-            if device.hasTorch {
-                actionView.addSubview(toggleLightButton)
-                toggleLightButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 0.0)
-                toggleLightButton.autoPinEdge(toSuperviewEdge: .top, withInset: 10.0)
-            }
-        }
-        
-        actionView.addSubview(clearButton)
-        clearButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 0.0)
-        clearButton.autoPinEdge(toSuperviewEdge: .top, withInset: 10.0)
-        
-        self.view.insertSubview(actionView, aboveSubview: sceneView)
-        
-        actionView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10.0)
-        actionView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10.0)
-        actionView.autoPinEdge(.top, to: .bottom, of: metadataSummaryView, withOffset: 10.0)
+        return metadataView.fromTextField.text != "" && metadataView.destinationTextField.text != "" && metadataView.weightTextField.text != ""
     }
     
     func showNextButton() {
@@ -309,13 +255,15 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     
     // MARK: UITextFieldDelegate
 
-    func metadataDestinationTextFieldHasErrors() -> Bool {
-        let length = metadataView.destinationTextField.text!.count
-        return length != 0 && length < 5
+    func metadataLocationTextFieldHasErrors() -> Bool {
+        let from_length = metadataView.fromTextField.text!.count
+        let destination_length = metadataView.destinationTextField.text!.count
+        
+        return from_length != 0 && from_length < 5 && destination_length != 0 && destination_length < 5
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        let hasErrors = metadataDestinationTextFieldHasErrors()
+        let hasErrors = metadataLocationTextFieldHasErrors() || metadataView.errorLabel.text != ""
         if hasErrors {
             metadataView.clearErrors()
         }
@@ -323,17 +271,21 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         if reason == .committed {
-            let destinationHasErrors = metadataDestinationTextFieldHasErrors()
-            if destinationHasErrors {
+            let locationHasErrors = metadataLocationTextFieldHasErrors()
+            if locationHasErrors {
                 metadataView.processErrors("Please enter a valid ZIP code.")
                 return
             }
             
             let filled = metadataFilled()
             if filled {
-                hideMetadataView()
-            } else {
-                metadataView.helpLabel.text = metadataView.defaultInstructionText
+                let from = metadataView.fromTextField.text!
+                let destination = metadataView.destinationTextField.text!
+                let weight = metadataView.weightTextField.text!
+                
+                currentItem.from = from
+                currentItem.destination = destination
+                currentItem.weight = weight
             }
         }
     }
@@ -343,13 +295,8 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         let newLength = text.count + string.count - range.length
         return newLength <= 5
     }
-
-    // Actions
-    @objc func handleEditTap(sender: UITapGestureRecognizer) {
-        if sender.state == .ended {
-            showMetadataView()
-        }
-    }
+    
+    // MARK - Touch handlers
     
     @objc func toggleLight(_ sender: UIButton!) {
         guard let device = AVCaptureDevice.default(for: AVMediaType.video)
@@ -417,6 +364,8 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         impactFeedbackGenerator.impactOccurred()
         
         currentMeasurement = .length
+        currentNodes = NodeSet()
+        
         resetButtons()
     }
     
@@ -564,7 +513,9 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         clearScene(sender)
     }
     
-    @IBAction func unwindToRoot(segue:UIStoryboardSegue) { }
+    @IBAction func unwindToRoot(segue:UIStoryboardSegue) {
+        clearScene(UIButton())
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showPriceView" {

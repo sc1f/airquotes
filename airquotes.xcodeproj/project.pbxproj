@@ -33,9 +33,11 @@
 		2C9CE92721AF5F4D00AEA6F8 /* NodeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE92621AF5F4D00AEA6F8 /* NodeSet.swift */; };
 		2C9CE92921AF8E4000AEA6F8 /* SceneHelperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE92821AF8E4000AEA6F8 /* SceneHelperView.swift */; };
 		2C9CE92B21AF9B7A00AEA6F8 /* ShippingCompanyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE92A21AF9B7A00AEA6F8 /* ShippingCompanyView.swift */; };
-		2C9CE93021AFA99B00AEA6F8 /* ShippingCompanyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE92F21AFA99B00AEA6F8 /* ShippingCompanyPageViewController.swift */; };
+		2C9CE93021AFA99B00AEA6F8 /* ShippingCompanyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE92F21AFA99B00AEA6F8 /* ShippingCompanyViewController.swift */; };
 		2C9CE93321AFAA3300AEA6F8 /* CompanyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE93221AFAA3300AEA6F8 /* CompanyViewController.swift */; };
 		2C9CE93521AFAFDF00AEA6F8 /* ServiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE93421AFAFDF00AEA6F8 /* ServiceTableViewCell.swift */; };
+		2C9CE93721B1D03100AEA6F8 /* UPSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE93621B1D03100AEA6F8 /* UPSService.swift */; };
+		2C9CE93921B1D1DB00AEA6F8 /* UPSData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CE93821B1D1DB00AEA6F8 /* UPSData.swift */; };
 		399162F0CDD6B81482FCF6E3 /* Pods_airquotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74320234750CBA646C18810F /* Pods_airquotes.framework */; };
 /* End PBXBuildFile section */
 
@@ -69,9 +71,11 @@
 		2C9CE92621AF5F4D00AEA6F8 /* NodeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSet.swift; sourceTree = "<group>"; };
 		2C9CE92821AF8E4000AEA6F8 /* SceneHelperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneHelperView.swift; sourceTree = "<group>"; };
 		2C9CE92A21AF9B7A00AEA6F8 /* ShippingCompanyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingCompanyView.swift; sourceTree = "<group>"; };
-		2C9CE92F21AFA99B00AEA6F8 /* ShippingCompanyPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingCompanyPageViewController.swift; sourceTree = "<group>"; };
+		2C9CE92F21AFA99B00AEA6F8 /* ShippingCompanyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingCompanyViewController.swift; sourceTree = "<group>"; };
 		2C9CE93221AFAA3300AEA6F8 /* CompanyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyViewController.swift; sourceTree = "<group>"; };
 		2C9CE93421AFAFDF00AEA6F8 /* ServiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTableViewCell.swift; sourceTree = "<group>"; };
+		2C9CE93621B1D03100AEA6F8 /* UPSService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSService.swift; sourceTree = "<group>"; };
+		2C9CE93821B1D1DB00AEA6F8 /* UPSData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSData.swift; sourceTree = "<group>"; };
 		74320234750CBA646C18810F /* Pods_airquotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_airquotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD671A1FAA1A35B7C3D00F3B /* Pods-airquotes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-airquotes.release.xcconfig"; path = "Pods/Target Support Files/Pods-airquotes/Pods-airquotes.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,6 +123,7 @@
 				2C3E82FF219C7C27001DB498 /* SphereNode.swift */,
 				2C3E8301219D4AC5001DB498 /* Item.swift */,
 				2C9CE92621AF5F4D00AEA6F8 /* NodeSet.swift */,
+				2C9CE93621B1D03100AEA6F8 /* UPSService.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -158,6 +163,7 @@
 				2C82B60A21936D44000A9459 /* Info.plist */,
 				2C3E8309219E2B2D001DB498 /* Extensions */,
 				2C980A8F21A3386B006FE7BA /* Graphics */,
+				2C9CE93A21B1D1DF00AEA6F8 /* API */,
 			);
 			path = airquotes;
 			sourceTree = "<group>";
@@ -217,10 +223,18 @@
 			children = (
 				2C82B60021936D41000A9459 /* MeasureARSCNViewController.swift */,
 				2C3E833421A246AC001DB498 /* PriceViewController.swift */,
-				2C9CE92F21AFA99B00AEA6F8 /* ShippingCompanyPageViewController.swift */,
+				2C9CE92F21AFA99B00AEA6F8 /* ShippingCompanyViewController.swift */,
 				2C9CE93221AFAA3300AEA6F8 /* CompanyViewController.swift */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		2C9CE93A21B1D1DF00AEA6F8 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				2C9CE93821B1D1DB00AEA6F8 /* UPSData.swift */,
+			);
+			name = API;
 			sourceTree = "<group>";
 		};
 		9F7F68C4194E7491F019746A /* Pods */ = {
@@ -319,12 +333,14 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-airquotes/Pods-airquotes-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -365,11 +381,13 @@
 				2C9CE92921AF8E4000AEA6F8 /* SceneHelperView.swift in Sources */,
 				2C3E8302219D4AC5001DB498 /* Item.swift in Sources */,
 				2C9CE93321AFAA3300AEA6F8 /* CompanyViewController.swift in Sources */,
+				2C9CE93921B1D1DB00AEA6F8 /* UPSData.swift in Sources */,
 				2C3E8308219E2B27001DB498 /* UITextFieldExtension.swift in Sources */,
 				2C9CE91821A9F1E100AEA6F8 /* ItemMetadataSummaryView.swift in Sources */,
 				2C3E8311219E642D001DB498 /* UILabelExtension.swift in Sources */,
 				2C3E8300219C7C27001DB498 /* SphereNode.swift in Sources */,
 				2C9CE91C21AA09A300AEA6F8 /* DefaultStackView.swift in Sources */,
+				2C9CE93721B1D03100AEA6F8 /* UPSService.swift in Sources */,
 				2C980A8B21A333D7006FE7BA /* ServiceCollectionViewLayout.swift in Sources */,
 				2C3E830D219E4BA2001DB498 /* Utils.swift in Sources */,
 				2C9CE91A21A9F4A100AEA6F8 /* UIStackViewExtension.swift in Sources */,
@@ -382,7 +400,7 @@
 				2C9CE90E21A9175400AEA6F8 /* ItemMetadataView.swift in Sources */,
 				2C9CE92721AF5F4D00AEA6F8 /* NodeSet.swift in Sources */,
 				2C9CE91021A9287300AEA6F8 /* UITextFieldPadded.swift in Sources */,
-				2C9CE93021AFA99B00AEA6F8 /* ShippingCompanyPageViewController.swift in Sources */,
+				2C9CE93021AFA99B00AEA6F8 /* ShippingCompanyViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

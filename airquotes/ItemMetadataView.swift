@@ -17,23 +17,44 @@ class ItemMetadataView: UIView {
     
     var logoImage: UIImageView = {
         let image = UIImageView(frame: CGRect.zero)
-        image.image = UIImage.init(named: "Boxwhite50")
+        image.image = UIImage.init(named: "Boxwhite25")
         return image
     }()
     
     var metadataStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+    var locationStackView = DefaultStackView(spacing: 20.0, axis: .horizontal)
+    var fromStackView = DefaultStackView(spacing: 0.0, axis: .vertical)
+    var destinationStackView = DefaultStackView(spacing: 0.0, axis: .vertical)
     
-    var destinationTextField: UITextFieldPadded = {
+    var fromTextField: UITextFieldPadded = {
         let textField = UITextFieldPadded(frame: CGRect.zero)
         
-        textField.attributedPlaceholder = NSAttributedString(string: "Enter a ZIP code", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+        textField.attributedPlaceholder = NSAttributedString(string: "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         
         textField.keyboardType = UIKeyboardType.numberPad
         textField.autocorrectionType = .no
         textField.clearButtonMode = .always
         
         textField.backgroundColor = UIColor.white
-        textField.font = UIFont.systemFont(ofSize: 20.0)
+        textField.font = UIFont.systemFont(ofSize: 16.0)
+        
+        textField.clearsOnBeginEditing = true
+        textField.setBottomBorder()
+        
+        return textField
+    }()
+    
+    var destinationTextField: UITextFieldPadded = {
+        let textField = UITextFieldPadded(frame: CGRect.zero)
+        
+        textField.attributedPlaceholder = NSAttributedString(string: "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+        
+        textField.keyboardType = UIKeyboardType.numberPad
+        textField.autocorrectionType = .no
+        textField.clearButtonMode = .always
+        
+        textField.backgroundColor = UIColor.white
+        textField.font = UIFont.systemFont(ofSize: 16.0)
         
         textField.clearsOnBeginEditing = true
         textField.setBottomBorder()
@@ -51,7 +72,7 @@ class ItemMetadataView: UIView {
         textField.clearButtonMode = .always
         
         textField.backgroundColor = UIColor.white
-        textField.font = UIFont.systemFont(ofSize: 20.0)
+        textField.font = UIFont.systemFont(ofSize: 16.0)
         
         textField.clearsOnBeginEditing = true
         textField.setBottomBorder()
@@ -79,9 +100,11 @@ class ItemMetadataView: UIView {
         errorLabel.removeFromSuperview()
     }
     
-    var destinationLabel = SmallLabel(text: "DESTINATION", alignment: .left, font_size: 12.0)
+    var fromLabel = SmallLabel(text: "FROM ZIP", alignment: .left, font_size: 12.0)
+    var destinationLabel = SmallLabel(text: "DESTINATION ZIP", alignment: .left, font_size: 12.0)
     var weightLabel = SmallLabel(text: "WEIGHT", alignment: .left, font_size: 12.0)
-    var helpLabel = SmallLabel(text: "", alignment: .center, font_size: 14.0)
+    
+    var helpLabel = SmallLabel(text: "", alignment: .center, font_size: 12.0)
     var errorLabel = SmallLabel(text: "", alignment: .center, font_size: 14.0)
     
     let screenSize = UIScreen.main.bounds
@@ -98,26 +121,39 @@ class ItemMetadataView: UIView {
         }
         
         self.backgroundColor = UIColor.white
-        self.layer.cornerRadius = 10.0
-        self.layer.shadowColor = UIColor.gray.cgColor
-        self.layer.shadowOffset = CGSize.init(width: 0.0, height: 1.0)
-        self.layer.shadowOpacity = 0.75
-        self.layer.shadowRadius = 2.0
         
         self.addSubview(logoImage)
         
+        fromLabel.textColor = UIColor.gray
         destinationLabel.textColor = UIColor.gray
         weightLabel.textColor = UIColor.gray
         errorLabel.textColor = UIColor.red
         
+        fromStackView.distribution = .fill
+        destinationStackView.distribution = .fill
+        
+        fromStackView.addArrangedSubview(fromLabel)
+        fromStackView.addArrangedSubview(fromTextField)
+        
+        fromStackView.setCustomSpacing(10.0, after: fromLabel)
+        
+        destinationStackView.addArrangedSubview(destinationLabel)
+        destinationStackView.addArrangedSubview(destinationTextField)
+        
+        destinationStackView.setCustomSpacing(10.0, after: destinationLabel)
+        
+        locationStackView.addArrangedSubview(fromStackView)
+        locationStackView.addArrangedSubview(destinationStackView)
+        
+        metadataStackView.distribution = .fill
         metadataStackView.addArrangedSubview(helpLabel)
-        metadataStackView.addArrangedSubview(destinationLabel)
-        metadataStackView.addArrangedSubview(destinationTextField)
+        metadataStackView.addArrangedSubview(locationStackView)
         metadataStackView.addArrangedSubview(weightLabel)
         metadataStackView.addArrangedSubview(weightTextField)
         
-        metadataStackView.setCustomSpacing(0.0, after: destinationLabel)
-        metadataStackView.setCustomSpacing(0.0, after: weightLabel)
+        metadataStackView.setCustomSpacing(20.0, after: helpLabel)
+        metadataStackView.setCustomSpacing(10.0, after: weightLabel)
+        metadataStackView.setCustomSpacing(20.0, after: locationStackView)
         
         self.addSubview(metadataStackView)
     }
@@ -129,7 +165,7 @@ class ItemMetadataView: UIView {
     override func updateConstraints() {
         if(shouldSetupConstraints) {
             logoImage.autoAlignAxis(toSuperviewAxis: .vertical)
-            logoImage.autoPinEdge(toSuperviewEdge: .top, withInset: 20.0)
+            logoImage.autoPinEdge(toSuperviewEdge: .top, withInset: 30.0)
             metadataStackView.autoPinEdge(.top, to: .bottom, of: logoImage, withOffset: 10.0)
             metadataStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.init(top: 10.0, left: 20.0, bottom: 20.0, right: 20.0), excludingEdge: .top)
             shouldSetupConstraints = false
