@@ -173,7 +173,7 @@ class ItemMetadataView: UIView {
     override func updateConstraints() {
         if(shouldSetupConstraints) {
             historyButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 20.0)
-            historyButton.autoPinEdge(toSuperviewEdge: .top, withInset: 40.0)
+            historyButton.autoPinEdge(toSuperviewEdge: .top, withInset: 50.0)
             historyButton.autoSetDimensions(to: CGSize.init(width: 20.0, height: 18.0))
             
             logoImage.autoAlignAxis(toSuperviewAxis: .vertical)

@@ -52,10 +52,13 @@
                             <outlet property="delegate" destination="QzJ-PS-bFc" id="EtT-KH-2QA"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="jl2-0g-35w" kind="show" identifier="showPriceView" id="7zw-OI-Zrb"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RZr-w0-cEk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1287" y="-833"/>
+            <point key="canvasLocation" x="1078" y="-909"/>
         </scene>
         <!--MeasureARSCN View Controller-->
         <scene sceneID="tXr-a1-R10">
@@ -106,4 +109,7 @@
             <point key="canvasLocation" x="1196" y="27"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="7zw-OI-Zrb"/>
+    </inferredMetricsTieBreakers>
 </document>

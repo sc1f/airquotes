@@ -16,6 +16,7 @@ class UPS extends Company {
 
         item.from_postcode ? from_postcode = item.from : from_postcode = "77089"
         item.to_postcode ? to_postcode = item.destination : to_postcode = "10003";
+        console.log(item)
 
         return {
             "UPSSecurity": {

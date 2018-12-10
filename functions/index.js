@@ -4,7 +4,7 @@ const api = require('./get_prices.js');
 exports.getPrice = functions.https.onCall((data, ctx) => {
    let item = data.item;
    let company = data.company;
-
+   console.log(data, item);
    if (item) item = JSON.parse(item);
 
    if (!api.valid_companies.includes(company)) {

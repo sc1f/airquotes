@@ -78,6 +78,8 @@ class PriceViewController: UIViewController {
         let data = try! JSONSerialization.data(withJSONObject: item)
         let json_string = String(data: data, encoding: .utf8)
         
+        print(json_string)
+        
         functions.httpsCallable("getPrice")
             .call(["company": "UPS", "item": json_string]) { (result, error) in
                 if let error = error as NSError? {
@@ -86,8 +88,8 @@ class PriceViewController: UIViewController {
                         let message = error.localizedDescription
                         let details = error.userInfo[FunctionsErrorDetailsKey]
                         
-                        print(code!)
-                        print(details!)
+                        print(code ?? "")
+                        print(details ?? "")
                         print(message)
                     }
                 }

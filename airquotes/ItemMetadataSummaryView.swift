@@ -13,12 +13,6 @@ class ItemMetadataSummaryView: UIView {
     
     var currentItem: Item?
     
-    var logoImage: UIImageView = {
-        let image = UIImageView(frame: CGRect.zero)
-        image.image = UIImage.init(named: "Boxwhite25")
-        return image
-    }()
-    
     // Stack Views
     lazy var metadataSummaryStackView = DefaultStackView(spacing: 10.0, axis: .vertical)
     lazy var fromStackView = DefaultStackView(spacing: 0.0, axis: .horizontal)
@@ -46,8 +40,6 @@ class ItemMetadataSummaryView: UIView {
         self.fromLabel.textColor = UIColor.gray
         self.destinationLabel.textColor = UIColor.gray
         self.weightLabel.textColor = UIColor.gray
-        
-        self.addSubview(logoImage)
         
         self.addSubview(metadataSummaryStackView)
         
@@ -80,10 +72,7 @@ class ItemMetadataSummaryView: UIView {
     
     override func updateConstraints() {
         if(shouldSetupConstraints) {
-            logoImage.autoAlignAxis(toSuperviewAxis: .vertical)
-            logoImage.autoPinEdge(toSuperviewEdge: .top, withInset: 20.0)
-            metadataSummaryStackView.autoPinEdge(.top, to: .bottom, of: logoImage, withOffset: 10.0)
-            metadataSummaryStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.init(top: 20.0, left: 20.0, bottom: 20.0, right: 20.0), excludingEdge: .top)
+            metadataSummaryStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.init(top: 10.0, left: 20.0, bottom: 20.0, right: 20.0))
             shouldSetupConstraints = false
         }
         super.updateConstraints()

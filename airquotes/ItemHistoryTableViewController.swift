@@ -11,7 +11,9 @@ import CoreData
 
 class ItemHistoryTableViewController: UITableViewController {
     
+    var successFeedbackGenerator = UINotificationFeedbackGenerator()
     var historyItems: [NSManagedObject] = []
+    var currentItem: Item?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,53 +63,85 @@ class ItemHistoryTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ItemHistoryTableViewCell", for: indexPath) as! ItemHistoryTableViewCell
         cell.currentItem = historyItems[indexPath.row] as? Item
-        print(cell.currentItem)
+        
+        let dimensionSummaryView: DefaultStackView = {
+            let view = DefaultStackView(spacing: 0.0, axis: .horizontal)
+            
+            let lengthStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+            let widthStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+            let heightStackView = DefaultStackView(spacing: 5.0, axis: .vertical)
+            
+            let lengthLabel = SmallLabel(text: "LENGTH", alignment: .center, font_size: 12.0)
+            let widthLabel = SmallLabel(text: "WIDTH", alignment: .center, font_size: 12.0)
+            let heightLabel = SmallLabel(text: "HEIGHT", alignment: .center, font_size: 12.0)
+            
+            lengthLabel.textColor = UIColor.gray
+            widthLabel.textColor = UIColor.gray
+            heightLabel.textColor = UIColor.gray
+            
+            let lengthValueLabel = SmallLabel(text: String(format: "%.2f\"", cell.currentItem!.dimension!.length), alignment: .center, font_size: 14.0)
+            let widthValueLabel = SmallLabel(text: String(format: "%.2f\"", cell.currentItem!.dimension!.width), alignment: .center, font_size: 14.0)
+            let heightValueLabel = SmallLabel(text: String(format: "%.2f\"", cell.currentItem!.dimension!.height), alignment: .center, font_size: 14.0)
+            
+            lengthStackView.addArrangedSubview(lengthLabel)
+            lengthStackView.addArrangedSubview(lengthValueLabel)
+            
+            widthStackView.addArrangedSubview(widthLabel)
+            widthStackView.addArrangedSubview(widthValueLabel)
+            
+            heightStackView.addArrangedSubview(heightLabel)
+            heightStackView.addArrangedSubview(heightValueLabel)
+            
+            view.addArrangedSubview(lengthStackView)
+            view.addArrangedSubview(widthStackView)
+            view.addArrangedSubview(heightStackView)
+            
+            return view
+        }()
+        
+        let metadataSummaryView = ItemMetadataSummaryView(currentItem: cell.currentItem!)
+        
+        metadataSummaryView.metadataSummaryStackView.addArrangedSubview(dimensionSummaryView)
+        
+        cell.contentView.addSubview(metadataSummaryView)
+        metadataSummaryView.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0))
+        
         return cell
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Delete the row from the data source
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+            let managedContext = appDelegate.persistentContainer.viewContext
+            let item = self.historyItems[indexPath.row]
+            managedContext.delete(item)
+            
+            do {
+                try managedContext.save()
+            } catch let error as NSError {
+                print("Could not delete item: \(error)")
+                return
+            }
+            
+            self.historyItems.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
-    */
 
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        successFeedbackGenerator.prepare()
+        currentItem = historyItems[indexPath.row] as? Item
+        performSegue(withIdentifier: "showPriceView", sender: self)
+        successFeedbackGenerator.notificationOccurred(.success)
     }
-    */
 
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "showPriceView" {
+            let vc = segue.destination as! PriceViewController
+            vc.currentItem = self.currentItem
+        }
     }
-    */
-
 }

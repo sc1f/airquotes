@@ -400,7 +400,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         case .height:
             key = "height"
         }
-        currentItem!.setValue(float_value, forKey: key)
+        currentItem!.dimension!.setValue(float_value, forKey: key)
         dimensionView.dimensionValueLabel.text = String(format: "%.2f\"", value)
     }
     
