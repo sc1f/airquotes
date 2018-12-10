@@ -8,11 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		2C3E8300219C7C27001DB498 /* SphereNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3E82FF219C7C27001DB498 /* SphereNode.swift */; };
-		2C3E8302219D4AC5001DB498 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3E8301219D4AC5001DB498 /* Item.swift */; };
 		2C3E8308219E2B27001DB498 /* UITextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3E8307219E2B27001DB498 /* UITextFieldExtension.swift */; };
 		2C3E830D219E4BA2001DB498 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3E830C219E4BA2001DB498 /* Utils.swift */; };
 		2C3E8311219E642D001DB498 /* UILabelExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3E8310219E642D001DB498 /* UILabelExtension.swift */; };
 		2C3E833521A246AC001DB498 /* PriceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3E833421A246AC001DB498 /* PriceViewController.swift */; };
+		2C4F5DF821BDB8C800105529 /* Item+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4F5DF421BDB8C800105529 /* Item+CoreDataClass.swift */; };
+		2C4F5DF921BDB8C800105529 /* Item+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4F5DF521BDB8C800105529 /* Item+CoreDataProperties.swift */; };
+		2C4F5DFA21BDB8C800105529 /* Dimension+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4F5DF621BDB8C800105529 /* Dimension+CoreDataClass.swift */; };
+		2C4F5DFB21BDB8C800105529 /* Dimension+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4F5DF721BDB8C800105529 /* Dimension+CoreDataProperties.swift */; };
+		2C4F5DFD21BDE3AF00105529 /* ItemHistoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4F5DFC21BDE3AF00105529 /* ItemHistoryTableViewController.swift */; };
+		2C4F5E0021BDE8AD00105529 /* ItemHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4F5DFF21BDE8AD00105529 /* ItemHistoryTableViewCell.swift */; };
+		2C4F5E0221BDED0400105529 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4F5E0121BDED0400105529 /* UIViewExtension.swift */; };
+		2C7F319E21BC9E8500F6F6C1 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F319D21BC9E8500F6F6C1 /* History.swift */; };
+		2C7F31C221BCA2D700F6F6C1 /* airquotes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F31C021BCA2D700F6F6C1 /* airquotes.xcdatamodeld */; };
 		2C82B5FD21936D41000A9459 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C82B5FC21936D41000A9459 /* AppDelegate.swift */; };
 		2C82B5FF21936D41000A9459 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C82B5FE21936D41000A9459 /* art.scnassets */; };
 		2C82B60121936D41000A9459 /* MeasureARSCNViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C82B60021936D41000A9459 /* MeasureARSCNViewController.swift */; };
@@ -44,11 +52,19 @@
 /* Begin PBXFileReference section */
 		173F39F1F93A641325E3C8D9 /* Pods-airquotes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-airquotes.debug.xcconfig"; path = "Pods/Target Support Files/Pods-airquotes/Pods-airquotes.debug.xcconfig"; sourceTree = "<group>"; };
 		2C3E82FF219C7C27001DB498 /* SphereNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphereNode.swift; sourceTree = "<group>"; };
-		2C3E8301219D4AC5001DB498 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		2C3E8307219E2B27001DB498 /* UITextFieldExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextFieldExtension.swift; sourceTree = "<group>"; };
 		2C3E830C219E4BA2001DB498 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		2C3E8310219E642D001DB498 /* UILabelExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtension.swift; sourceTree = "<group>"; };
 		2C3E833421A246AC001DB498 /* PriceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceViewController.swift; sourceTree = "<group>"; };
+		2C4F5DF421BDB8C800105529 /* Item+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataClass.swift"; sourceTree = "<group>"; };
+		2C4F5DF521BDB8C800105529 /* Item+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		2C4F5DF621BDB8C800105529 /* Dimension+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dimension+CoreDataClass.swift"; sourceTree = "<group>"; };
+		2C4F5DF721BDB8C800105529 /* Dimension+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dimension+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		2C4F5DFC21BDE3AF00105529 /* ItemHistoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemHistoryTableViewController.swift; sourceTree = "<group>"; };
+		2C4F5DFF21BDE8AD00105529 /* ItemHistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemHistoryTableViewCell.swift; sourceTree = "<group>"; };
+		2C4F5E0121BDED0400105529 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		2C7F319D21BC9E8500F6F6C1 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
+		2C7F31C121BCA2D700F6F6C1 /* airquotes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = airquotes.xcdatamodel; sourceTree = "<group>"; };
 		2C82B5F921936D41000A9459 /* airquotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = airquotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C82B5FC21936D41000A9459 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C82B5FE21936D41000A9459 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -98,6 +114,7 @@
 				2C3E8307219E2B27001DB498 /* UITextFieldExtension.swift */,
 				2C3E8310219E642D001DB498 /* UILabelExtension.swift */,
 				2C9CE91921A9F4A100AEA6F8 /* UIStackViewExtension.swift */,
+				2C4F5E0121BDED0400105529 /* UIViewExtension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -109,6 +126,7 @@
 				2C9CE92C21AF9BB900AEA6F8 /* PriceView */,
 				2C9CE91721A9F1E100AEA6F8 /* ItemMetadataSummaryView.swift */,
 				2C9CE91121A9DCFD00AEA6F8 /* ItemDimensionsView.swift */,
+				2C4F5DFF21BDE8AD00105529 /* ItemHistoryTableViewCell.swift */,
 				2C9CE92821AF8E4000AEA6F8 /* SceneHelperView.swift */,
 				2C9CE92321AA0D8900AEA6F8 /* UITextField */,
 				2C9CE91D21AA09A800AEA6F8 /* StackView */,
@@ -117,11 +135,24 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		2C4F5DFE21BDE88700105529 /* Price */ = {
+			isa = PBXGroup;
+			children = (
+				2C3E833421A246AC001DB498 /* PriceViewController.swift */,
+				2C9CE92F21AFA99B00AEA6F8 /* ShippingCompanyViewController.swift */,
+				2C9CE93221AFAA3300AEA6F8 /* CompanyViewController.swift */,
+			);
+			name = Price;
+			sourceTree = "<group>";
+		};
 		2C5321CD219912A7004CA6ED /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				2C4F5DF421BDB8C800105529 /* Item+CoreDataClass.swift */,
+				2C4F5DF521BDB8C800105529 /* Item+CoreDataProperties.swift */,
+				2C4F5DF621BDB8C800105529 /* Dimension+CoreDataClass.swift */,
+				2C4F5DF721BDB8C800105529 /* Dimension+CoreDataProperties.swift */,
 				2C3E82FF219C7C27001DB498 /* SphereNode.swift */,
-				2C3E8301219D4AC5001DB498 /* Item.swift */,
 				2C9CE92621AF5F4D00AEA6F8 /* NodeSet.swift */,
 				2C9CE93621B1D03100AEA6F8 /* UPSService.swift */,
 			);
@@ -151,6 +182,7 @@
 			children = (
 				2C3E830C219E4BA2001DB498 /* Utils.swift */,
 				2C82B5FC21936D41000A9459 /* AppDelegate.swift */,
+				2C7F31C021BCA2D700F6F6C1 /* airquotes.xcdatamodeld */,
 				2C82B61021937195000A9459 /* GoogleService-Info.plist */,
 				2C82B5FE21936D41000A9459 /* art.scnassets */,
 				2C9CE93121AFA9A000AEA6F8 /* Controllers */,
@@ -180,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				2C980A8D21A33866006FE7BA /* RoundedRectangle.swift */,
+				2C7F319D21BC9E8500F6F6C1 /* History.swift */,
 				2C9CE91321A9E07400AEA6F8 /* Crosshair.swift */,
 			);
 			name = Graphics;
@@ -222,9 +255,8 @@
 			isa = PBXGroup;
 			children = (
 				2C82B60021936D41000A9459 /* MeasureARSCNViewController.swift */,
-				2C3E833421A246AC001DB498 /* PriceViewController.swift */,
-				2C9CE92F21AFA99B00AEA6F8 /* ShippingCompanyViewController.swift */,
-				2C9CE93221AFAA3300AEA6F8 /* CompanyViewController.swift */,
+				2C4F5DFC21BDE3AF00105529 /* ItemHistoryTableViewController.swift */,
+				2C4F5DFE21BDE88700105529 /* Price */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -335,6 +367,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-airquotes/Pods-airquotes-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/Groot/Groot.framework",
 				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -342,6 +375,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Groot.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -379,25 +413,33 @@
 				2C9CE93521AFAFDF00AEA6F8 /* ServiceTableViewCell.swift in Sources */,
 				2C3E833521A246AC001DB498 /* PriceViewController.swift in Sources */,
 				2C9CE92921AF8E4000AEA6F8 /* SceneHelperView.swift in Sources */,
-				2C3E8302219D4AC5001DB498 /* Item.swift in Sources */,
 				2C9CE93321AFAA3300AEA6F8 /* CompanyViewController.swift in Sources */,
+				2C4F5DFA21BDB8C800105529 /* Dimension+CoreDataClass.swift in Sources */,
 				2C9CE93921B1D1DB00AEA6F8 /* UPSData.swift in Sources */,
 				2C3E8308219E2B27001DB498 /* UITextFieldExtension.swift in Sources */,
+				2C4F5E0221BDED0400105529 /* UIViewExtension.swift in Sources */,
 				2C9CE91821A9F1E100AEA6F8 /* ItemMetadataSummaryView.swift in Sources */,
 				2C3E8311219E642D001DB498 /* UILabelExtension.swift in Sources */,
+				2C4F5DFD21BDE3AF00105529 /* ItemHistoryTableViewController.swift in Sources */,
 				2C3E8300219C7C27001DB498 /* SphereNode.swift in Sources */,
 				2C9CE91C21AA09A300AEA6F8 /* DefaultStackView.swift in Sources */,
 				2C9CE93721B1D03100AEA6F8 /* UPSService.swift in Sources */,
 				2C980A8B21A333D7006FE7BA /* ServiceCollectionViewLayout.swift in Sources */,
 				2C3E830D219E4BA2001DB498 /* Utils.swift in Sources */,
+				2C7F31C221BCA2D700F6F6C1 /* airquotes.xcdatamodeld in Sources */,
 				2C9CE91A21A9F4A100AEA6F8 /* UIStackViewExtension.swift in Sources */,
 				2C82B60121936D41000A9459 /* MeasureARSCNViewController.swift in Sources */,
 				2C9CE92121AA0AC000AEA6F8 /* SmallLabel.swift in Sources */,
+				2C4F5DF821BDB8C800105529 /* Item+CoreDataClass.swift in Sources */,
 				2C82B5FD21936D41000A9459 /* AppDelegate.swift in Sources */,
+				2C4F5E0021BDE8AD00105529 /* ItemHistoryTableViewCell.swift in Sources */,
+				2C4F5DFB21BDB8C800105529 /* Dimension+CoreDataProperties.swift in Sources */,
 				2C9CE91421A9E07400AEA6F8 /* Crosshair.swift in Sources */,
 				2C980A8E21A33866006FE7BA /* RoundedRectangle.swift in Sources */,
 				2C9CE91221A9DCFD00AEA6F8 /* ItemDimensionsView.swift in Sources */,
+				2C4F5DF921BDB8C800105529 /* Item+CoreDataProperties.swift in Sources */,
 				2C9CE90E21A9175400AEA6F8 /* ItemMetadataView.swift in Sources */,
+				2C7F319E21BC9E8500F6F6C1 /* History.swift in Sources */,
 				2C9CE92721AF5F4D00AEA6F8 /* NodeSet.swift in Sources */,
 				2C9CE91021A9287300AEA6F8 /* UITextFieldPadded.swift in Sources */,
 				2C9CE93021AFA99B00AEA6F8 /* ShippingCompanyViewController.swift in Sources */,
@@ -600,6 +642,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		2C7F31C021BCA2D700F6F6C1 /* airquotes.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2C7F31C121BCA2D700F6F6C1 /* airquotes.xcdatamodel */,
+			);
+			currentVersion = 2C7F31C121BCA2D700F6F6C1 /* airquotes.xcdatamodel */;
+			path = airquotes.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 2C82B5F121936D41000A9459 /* Project object */;
 }

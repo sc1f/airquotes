@@ -49,6 +49,9 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (5.3.6):
     - GoogleUtilities/Logger
+  - Groot (3.0.1):
+    - Groot/Swift (= 3.0.1)
+  - Groot/Swift (3.0.1)
   - GTMSessionFetcher/Core (1.2.1)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
@@ -60,6 +63,7 @@ PODS:
 DEPENDENCIES:
   - Firebase/Core
   - Firebase/Functions
+  - Groot
   - PureLayout
 
 SPEC REPOS:
@@ -71,6 +75,7 @@ SPEC REPOS:
     - FirebaseInstanceID
     - GoogleAppMeasurement
     - GoogleUtilities
+    - Groot
     - GTMSessionFetcher
     - nanopb
     - PureLayout
@@ -83,10 +88,11 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
   GoogleAppMeasurement: 5029d78f2b438bd30ffb44e6c558b57c21622727
   GoogleUtilities: 95996bea7c7d9b8fb811b7507669a4a8762f80c7
+  Groot: a668afbcf0be88d76c0a26c714cfa4638ceaca66
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   PureLayout: f08c01b8dec00bb14a1fefa3de4c7d9c265df85e
 
-PODFILE CHECKSUM: cd8cea11c30f71fe9bbf2fe1b2677ed248a534a0
+PODFILE CHECKSUM: e04dfa487929068812fcc05b08a3e5bf36440d51
 
 COCOAPODS: 1.5.3

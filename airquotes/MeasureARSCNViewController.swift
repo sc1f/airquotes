@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 import SceneKit
 import ARKit
 
@@ -27,24 +28,35 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         case width
         case height
     }
+    
+    // MARK: NSManagedObject
+    func generateNewItem() -> NSManagedObject {
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        
+        let managedContext = appDelegate!.persistentContainer.viewContext
+        let dimension = NSEntityDescription.insertNewObject(forEntityName: "Dimension", into: managedContext)
+        let item = NSEntityDescription.insertNewObject(forEntityName: "Item", into: managedContext)
+        
+        item.setValue(dimension, forKey: "dimension")
+        return item
+    }
+    
+    var currentItem: Item?
 
     // scene setup
-    var currentItem = Item(from: "", destination: "", weight: "")
     var measureStatus = "Loading measurements"
     var impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
     var successFeedbackGenerator = UINotificationFeedbackGenerator()
     
+    var sideMenuController: UINavigationController?
     
-    // subviews
     lazy var metadataView: ItemMetadataView = {
-        let view = ItemMetadataView(currentItem: currentItem)
+        let view = ItemMetadataView(currentItem: currentItem! as Item)
         view.fromTextField.delegate = self
         view.destinationTextField.delegate = self
         view.weightTextField.delegate = self
         return view
     }()
-    
-    //lazy var metadataSummaryView = ItemMetadataSummaryView(currentItem: currentItem)
     
     lazy var sceneView: ARSCNView = {
         let scene = ARSCNView(frame: CGRect.zero)
@@ -158,9 +170,7 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if currentItem.dimensions.length != 0 || currentItem.dimensions.width != 0 || currentItem.dimensions.height != 0 {
-            currentItem.dimensions = Dimensions(length: 0.0, width: 0.0, height: 0.0)
-        }
+        currentItem = generateNewItem() as? Item
         
         view.addSubview(sceneView)
         sceneView.autoPinEdgesToSuperviewSafeArea()
@@ -169,6 +179,9 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         metadataView.autoPinEdge(toSuperviewEdge: .top)
         metadataView.autoPinEdge(toSuperviewSafeArea: .leading)
         metadataView.autoPinEdge(toSuperviewSafeArea: .trailing)
+        
+        let presentSideButtonRecognizer = UITapGestureRecognizer(target: self, action: #selector(segueToHistory))
+        metadataView.historyButton.addGestureRecognizer(presentSideButtonRecognizer)
         
         actionView.addSubview(statusLabel)
         statusLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 10.0)
@@ -205,9 +218,15 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: true)
         let config = ARWorldTrackingConfiguration()
         config.isLightEstimationEnabled = true
         sceneView.session.run(config, options: [.resetTracking, .removeExistingAnchors])
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     override func viewDidLayoutSubviews() {
@@ -283,9 +302,9 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
                 let destination = metadataView.destinationTextField.text!
                 let weight = metadataView.weightTextField.text!
                 
-                currentItem.from = from
-                currentItem.destination = destination
-                currentItem.weight = weight
+                currentItem!.setValue(from, forKey: "from")
+                currentItem!.setValue(destination, forKey: "destination")
+                currentItem!.setValue(weight, forKey: "weight")
             }
         }
     }
@@ -297,7 +316,6 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     }
     
     // MARK - Touch handlers
-    
     @objc func toggleLight(_ sender: UIButton!) {
         guard let device = AVCaptureDevice.default(for: AVMediaType.video)
             else {return}
@@ -371,17 +389,19 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
     
     // TODO: eventually refactor this entire block
     func processMeasurement(_ value: CGFloat) {
+        let float_value = Float(value)
+        var key = "length"
         
         switch currentMeasurement {
         case .length:
-            currentItem.dimensions.length = value
+            key = "length"
         case .width:
-            currentItem.dimensions.width = value
+            key = "width"
         case .height:
-            currentItem.dimensions.height = value
+            key = "height"
         }
+        currentItem!.setValue(float_value, forKey: key)
         dimensionView.dimensionValueLabel.text = String(format: "%.2f\"", value)
-        print(currentItem.dimensions)
     }
     
     func nextMeasurement() {
@@ -507,8 +527,35 @@ class MeasureARSCNViewController: UIViewController, UITextFieldDelegate, ARSCNVi
         }
     }
     
+    // MARK: CoreData
+    func save() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save item: \(error)")
+        }
+    }
+    
     // MARK: Segues
+    @objc func segueToHistory(sender: UITapGestureRecognizer) {
+        self.metadataView.historyButton.rotate360Degrees() // CoreAnimation
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        managedContext.reset()
+        
+        performSegue(withIdentifier: "showItemHistoryTableView", sender: self)
+        clearScene(UIButton())
+    }
+    
     @objc func segueToPrices(_ sender: UIButton) {
+        // TODO: save
+        save()
         performSegue(withIdentifier: "showPriceView", sender: self)
         clearScene(sender)
     }

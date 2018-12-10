@@ -60,9 +60,9 @@ class UPS extends Company {
                                 "Code": "IN",
                                 "Description": "inches"
                             },
-                            "Length": item["dimensions"]["length"].toFixed(2),
-                            "Width": item["dimensions"]["width"].toFixed(2),
-                            "Height": item["dimensions"]["height"].toFixed(2)
+                            "Length": item["dimension"]["length"].toFixed(2),
+                            "Width": item["dimension"]["width"].toFixed(2),
+                            "Height": item["dimension"]["height"].toFixed(2)
                         },
                         "PackageWeight": {
                             "UnitOfMeasurement": {

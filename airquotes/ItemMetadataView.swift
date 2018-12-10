@@ -13,7 +13,10 @@ class ItemMetadataView: UIView {
     
     var defaultInstructionText = "Enter your item details to begin"
     var shouldSetupConstraints = true
+    // TODO: NSManagedObject
     var currentItem: Item?
+    
+    var historyButton = History(color: UIColor.black)
     
     var logoImage: UIImageView = {
         let image = UIImageView(frame: CGRect.zero)
@@ -115,12 +118,17 @@ class ItemMetadataView: UIView {
         self.currentItem = currentItem
         helpLabel.text = defaultInstructionText
         
-        if currentItem.destination != "" && currentItem.weight != "" {
+        if currentItem.destination != "" {
             destinationTextField.text = currentItem.destination
+        }
+        
+        if currentItem.weight != "" {
             weightTextField.text = currentItem.weight
         }
         
         self.backgroundColor = UIColor.white
+        
+        self.addSubview(historyButton)
         
         self.addSubview(logoImage)
         
@@ -164,10 +172,16 @@ class ItemMetadataView: UIView {
     
     override func updateConstraints() {
         if(shouldSetupConstraints) {
+            historyButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 20.0)
+            historyButton.autoPinEdge(toSuperviewEdge: .top, withInset: 40.0)
+            historyButton.autoSetDimensions(to: CGSize.init(width: 20.0, height: 18.0))
+            
             logoImage.autoAlignAxis(toSuperviewAxis: .vertical)
-            logoImage.autoPinEdge(toSuperviewEdge: .top, withInset: 30.0)
+            logoImage.autoPinEdge(toSuperviewEdge: .top, withInset: 40.0)
+            
             metadataStackView.autoPinEdge(.top, to: .bottom, of: logoImage, withOffset: 10.0)
             metadataStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.init(top: 10.0, left: 20.0, bottom: 20.0, right: 20.0), excludingEdge: .top)
+            
             shouldSetupConstraints = false
         }
         super.updateConstraints()

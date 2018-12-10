@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Groot
 
 class PriceViewController: UIViewController {
     
@@ -33,9 +34,9 @@ class PriceViewController: UIViewController {
         widthLabel.textColor = UIColor.gray
         heightLabel.textColor = UIColor.gray
         
-        let lengthValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimensions.length), alignment: .center, font_size: 14.0)
-        let widthValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimensions.width), alignment: .center, font_size: 14.0)
-        let heightValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimensions.height), alignment: .center, font_size: 14.0)
+        let lengthValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimension!.length), alignment: .center, font_size: 14.0)
+        let widthValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimension!.width), alignment: .center, font_size: 14.0)
+        let heightValueLabel = SmallLabel(text: String(format: "%.2f\"", currentItem!.dimension!.height), alignment: .center, font_size: 14.0)
         
         lengthStackView.addArrangedSubview(lengthLabel)
         lengthStackView.addArrangedSubview(lengthValueLabel)
@@ -58,31 +59,10 @@ class PriceViewController: UIViewController {
         view.addBottomBorder()
         return view
     }()
-    
-    lazy var backButton: UIButton = {
-        let button = UIButton(frame: CGRect.zero)
-        
-        button.setTitle("Back", for: .normal)
-        
-        button.backgroundColor = UIColor.clear
-        button.setTitleColor(UIColor.black, for: .normal)
-        button.titleLabel!.font = UIFont.systemFont(ofSize: 16.0, weight: .bold)
-        
-        button.layer.borderColor = UIColor.black.cgColor
-        button.layer.borderWidth = 2.0
-        button.layer.cornerRadius = 5.0
-        
-        button.addTarget(self, action: #selector(handleBackButtonPress), for: .touchUpInside)
-        
-        return button
-    }()
-    
-    @objc func handleBackButtonPress(_ sender: UIButton) {
-        performSegue(withIdentifier: "unwindToRootSegue", sender: self)
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Item Details"
         
         self.metadataSummaryView.metadataSummaryStackView.addArrangedSubview(self.dimensionSummaryView)
         self.view.addSubview(self.metadataSummaryView)
@@ -92,9 +72,11 @@ class PriceViewController: UIViewController {
         loadingIndicator.autoCenterInSuperview()
         loadingIndicator.startAnimating()
         
-        let encoder = JSONEncoder()
-        let json_item = try! encoder.encode(currentItem)
-        let json_string = String(data: json_item, encoding: .utf8)
+        //let encoder = JSONEncoder()
+        //let json_item = try! encoder.encode(currentItem)
+        let item = json(fromObject: currentItem!)
+        let data = try! JSONSerialization.data(withJSONObject: item)
+        let json_string = String(data: data, encoding: .utf8)
         
         functions.httpsCallable("getPrice")
             .call(["company": "UPS", "item": json_string]) { (result, error) in
@@ -144,9 +126,6 @@ class PriceViewController: UIViewController {
                 companyPageController.view.autoPinEdge(toSuperviewEdge: .leading, withInset: 10.0)
                 companyPageController.view.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10.0)
                 companyPageController.view.autoPinEdge(toSuperviewEdge: .bottom, withInset: 30.0)
-                
-                self.view.addSubview(self.backButton)
-                self.backButton.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0), excludingEdge: .top)
         }
     }
     

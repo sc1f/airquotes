@@ -26,9 +26,10 @@ class ItemMetadataSummaryView: UIView {
     lazy var weightStackView = DefaultStackView(spacing: 0.0, axis: .horizontal)
     
     // Value Labels
-    lazy var fromValueLabel = SmallLabel(text: currentItem!.from, alignment: .right, font_size: 14.0)
-    lazy var destinationValueLabel = SmallLabel(text: currentItem!.destination, alignment: .right, font_size: 14.0)
-    lazy var weightValueLabel = SmallLabel(text: currentItem!.weight, alignment: .right, font_size: 14.0)
+    // TODO: NSManagedObject
+    lazy var fromValueLabel = SmallLabel(text: currentItem!.from ?? "", alignment: .right, font_size: 14.0)
+    lazy var destinationValueLabel = SmallLabel(text: currentItem!.destination ?? "", alignment: .right, font_size: 14.0)
+    lazy var weightValueLabel = SmallLabel(text: currentItem!.weight ?? "", alignment: .right, font_size: 14.0)
     
     // Helper Labels
     lazy var fromLabel = SmallLabel(text: "FROM", alignment: .left, font_size: 14.0)

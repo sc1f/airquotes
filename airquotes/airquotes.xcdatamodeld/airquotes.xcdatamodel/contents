@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18B75" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Dimension" representedClassName="Dimension" syncable="YES">
+        <attribute name="height" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES">
+            <userInfo>
+                <entry key="JSONKeyPath" value="height"/>
+            </userInfo>
+        </attribute>
+        <attribute name="length" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES">
+            <userInfo>
+                <entry key="JSONKeyPath" value="length"/>
+            </userInfo>
+        </attribute>
+        <attribute name="width" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES">
+            <userInfo>
+                <entry key="JSONKeyPath" value="width"/>
+            </userInfo>
+        </attribute>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="dimension" inverseEntity="Item" syncable="YES"/>
+        <userInfo>
+            <entry key="JSONKeyPath" value="item"/>
+        </userInfo>
+    </entity>
+    <entity name="Item" representedClassName="Item" syncable="YES">
+        <attribute name="destination" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="JSONKeyPath" value="destination"/>
+            </userInfo>
+        </attribute>
+        <attribute name="from" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="JSONKeyPath" value="from"/>
+            </userInfo>
+        </attribute>
+        <attribute name="weight" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="JSONKeyPath" value="weight"/>
+            </userInfo>
+        </attribute>
+        <relationship name="dimension" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Dimension" inverseName="item" inverseEntity="Dimension" syncable="YES">
+            <userInfo>
+                <entry key="JSONKeyPath" value="dimension"/>
+            </userInfo>
+        </relationship>
+        <userInfo>
+            <entry key="JSONKeyPath" value="weight"/>
+        </userInfo>
+    </entity>
+    <elements>
+        <element name="Dimension" positionX="-54" positionY="18" width="128" height="105"/>
+        <element name="Item" positionX="-63" positionY="-18" width="128" height="105"/>
+    </elements>
+</model>
